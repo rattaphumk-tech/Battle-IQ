@@ -66,7 +66,7 @@
 
 | Name | Role | Core Responsibilities |
 | :--- | :--- | :--- |
-| **นายรัฐภูมิ เกิดพระจีน ** | **Software Architect & Lead UML** | Requirement Analysis, UML Modeling (Use Case, Class Diagram, Sequence Diagram), Database Schema Design & ERD |
+| **นายรัฐภูมิ เกิดพระจีน** | **Software Architect & Lead UML** | Requirement Analysis, UML Modeling (Use Case, Class Diagram, Sequence Diagram), Database Schema Design & ERD |
 | **นายธนกฤต ละครพล** | **Core Quiz & Dynamic Engine** | Question Factory, Dynamic Difficulty Logic, Game Session Management, Command Pattern for Submissions |
 | **นายณพวิทย์ วงษ์ประเสริฐ** | **Scoring & Gamification Logic** | Scoring Strategy, Level/EXP Multiplier, Win Streak Tracker, Decorator Pattern for Boosters |
 | **นายพีรพัฒน์ ป้องกันยา** | **Event Observer & Integration** | Observer Pattern for Achievements/Leaderboards, Fact Insights Provider, External Adapter Services |
