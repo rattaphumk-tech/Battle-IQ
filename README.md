@@ -1,114 +1,84 @@
-# 🎮 Battle IQ - Ultimate Quiz & Knowledge Battle Platform 
+# 🎮 Battle IQ - Ultimate Trivia & Gamified Learning Platform
 
-> **Battle IQ** คือแอปพลิเคชันเกมแข่งขันวัดความรู้ตามหมวดหมู่ที่เลือก (Trivia & Knowledge Battle Platform) ที่รวมเอาความสนุกของการตอบคำถามจับเวลา การเพิ่มระดับความยากแบบ Dynamic, ระบบ Gamification (Level, Win Streak, Badges) และความรู้รอบตัวหลังตอบคำถาม (Fun Facts & Educational Insights) เข้าไว้ด้วยกัน
-
-พัฒนาขึ้นเพื่อเป็น **Final Project** รายวิชา *Principles of Software Design and Development* โดยมุ่งเน้นการประยุกต์ใช้ **Software Architecture, Design Patterns (GoF), GRASP, High-Level SOLID Principles** และ **Spring Boot Transactional Operations** อย่างครบถ้วนและเป็นรูปธรรม
+Battle IQ เป็นเว็บแอปพลิเคชันแข่งขันวัดความรู้ตามหมวดหมู่แบบเรียลไทม์ ที่ผสานระบบ Dynamic Difficulty, Instant Fun-Facts และ Gamification (Level, Win Streak, Badges) เข้าด้วยกัน มุ่งเน้นการออกแบบด้วยสถาปัตยกรรม Layered Architecture, SOLID Principles, Design Patterns และ Spring Boot Transactional Management อย่างเป็นระบบ
 
 ---
 
-## 🎯 Key Features & Highlights
+## 👥 สมาชิกกลุ่ม
 
-* **🧠 Multi-Category Trivia:** เลือกเล่นตามหมวดหมู่ความรู้ที่สนใจ (เช่น Science, History, Tech, Pop Culture, General Knowledge)
-* **⏱️ Dynamic Difficulty & Timer:** ระบบปรับความยากของคำถามตามประสิทธิภาพของผู้เล่น ยิ่ง Win Streak สูง คำถามจะยิ่งท้าทายขึ้นพร้อมเวลาตอบที่บีบหัวใจ
-* **💡 Instant Learning (Bite-sized Knowledge):** ทุกๆ คำตอบ (ทั้งถูกและผิด) จะแสดงเกร็ดความรู้สั้นๆ (Educational Insights / Fun Facts) ให้ผู้เล่นได้เรียนรู้เสมอ
-* **🔥 Gamification System:**
-  * ระบบ **Level & EXP System** สะสมประสบการณ์จากการเล่น
-  * ระบบ **Win Streak Multiplier** โบนัสคะแนนคูณตามจำนวนข้อที่ตอบถูกติดต่อกัน
-  * **Badges & Achievements** ปลดล็อกเหรียญเกียรติยศเมื่อทำตามเงื่อนไขสำเร็จ
-* **🏆 Global & Friend Leaderboards:** ตารางคะแนนจัดอันดับความรอบรู้
-* **🛡️ Sound Architecture & Design Patterns:** โครงสร้างโค้ดถูกออกแบบตามหลักสถาปัตยกรรมซอฟต์แวร์ที่ดี รองรับการขยายระบบในอนาคต
+| ลำดับ | ชื่อ-นามสกุล | รหัสนักศึกษา | Section | Branch | หน้าที่รับผิดชอบ |
+| :---: | :--- | :---: | :---: | :--- | :--- |
+| 1 | นายกิตติศักดิ์ ใจดี | 66xxxxxxxx-1 | 01 | `kittisak_66xxxxxxxx1_01` | **Software Architect & Lead UML:** Requirements Analysis, System Architecture, Domain Model, ERD Design |
+| 2 | นายธนกฤต มั่นคง | 66xxxxxxxx-2 | 01 | `thanakrit_66xxxxxxxx2_01` | **Core Quiz Engine:** Question Factory, Dynamic Difficulty Logic, Session Management |
+| 3 | นางสาวปรารถนา ดีจริง | 66xxxxxxxx-3 | 01 | `prarthana_66xxxxxxxx3_01` | **Scoring & Gamification:** Strategy Pattern (Scoring Engine), Win Streak Multiplier, Leveling System |
+| 4 | นายพีรพัฒน์ สุขสันต์ | 66xxxxxxxx-4 | 01 | `peerapat_66xxxxxxxx4_01` | **Observer & Integration Services:** Event Listener for Badges/Leaderboard, External Knowledge API Adapter |
+| 5 | นางสาววรินทร สายทอง | 66xxxxxxxx-5 | 01 | `warinthorn_66xxxxxxxx5_01` | **Spring Boot Core & Security/Transactions:** RestController, JPA Repositories, `@Transactional` Management, Proxy Interceptor |
 
 ---
 
-## 🏗️ Software Architecture & Design Patterns
+## 🛠️ Tech Stack
 
-โปรเจกต์นี้ได้รับการออกแบบโดยใช้ **Design Patterns** และหลักการทาง **Software Engineering** เพื่อแก้ปัญหาในแต่ละส่วนอย่างสมเหตุสมผล:
-
-### 🌟 Applied Design Patterns (GoF)
-
-| Design Pattern | Category | Usage in Battle IQ |
-| :--- | :--- | :--- |
-| **Strategy Pattern** | Behavioral | ใช้คำนวณคะแนนและ EXP (`ScoringStrategy`) โดยปรับตาม Win Streak, เวลาที่เหลือ และระดับความยากของคำถาม |
-| **Factory / Abstract Factory** | Creational | ใช้สร้างประเภทคำถามต่างรูปแบบ (`QuestionFactory` -> Multiple Choice, True/False, Image-based Question) |
-| **Observer Pattern** | Behavioral | ระบบ Event Listener เมื่อจบเกม (`GameCompletionObserver`) เพื่ออัปเดต Level/EXP, บันทึก Win Streak, ปลดล็อก Badges และส่งสถิติไป Leaderboard |
-| **Decorator Pattern** | Structural | เพิ่มเอฟเฟกต์หรือพลังพิเศษของ Power-ups/Boosters (เช่น `DoubleExpDecorator`, `TimeExtensionDecorator`, `FiftyFiftyDecorator`) |
-| **Command Pattern** | Behavioral | แคปซูล Action การตอบคำถาม (`SubmitAnswerCommand`) เพื่อรองรับการตรวจทาน ประมวลผลเวลา และบันทึกประวัติการตอบ (Undo/Replay Stream) |
-| **Proxy Pattern** | Structural | ทำ `QuestionCacheProxy` เพื่อลด Load จาก Database ในคำถามยอดนิยม และใช้เป็น Security Proxy ในการตรวจสอบสิทธิ์การเล่น |
-| **Adapter Pattern** | Structural | เชื่อมต่อกับ External Fact/Knowledge API หรือระบบ Analytics ภายนอก |
-
-### 💎 SOLID & GRASP Principles Applied
-* **Single Responsibility Principle (SRP):** แยก Service ชัดเจน เช่น `QuizSessionService`, `ScoringEngine`, `AchievementManager`, `UserProgressService`
-* **Open/Closed Principle (OCP):** เพิ่มรูปแบบคำถามหรือคำนวณคะแนนแบบใหม่ได้โดยการสร้าง Strategy / Factory ใหม่โดยไม่ต้องแก้ไขโค้ดเดิม
-* **Dependency Inversion Principle (DIP):** ทุก Service เรียกใช้ผ่าน Abstraction / Interface
-* **High Cohesion & Low Coupling:** โมดูลเกม การคำนวณ และการเก็บข้อมูลแยกกันอย่างเด็ดขาดตามหลัก GRASP
-
----
-
-## 🛠️ Tech Stack & Tools
-
-* **Backend Framework:** Java / Spring Boot 3.x
+* **Backend Framework:** Java 17 / Spring Boot 3.x
 * **Build Tool:** Apache Maven
-* **Database:** MySQL / PostgreSQL
-* **ORM / Persistence:** Spring Data JPA / Hibernate (พร้อมการจัดการ `@Transactional` สำหรับ Score & Inventory Consistency)
-* **Version Control:** Git & GitHub
-* **UML & Design Tools:** Draw.io / PlantUML (Use Case, Class Diagram, Sequence Diagram, Activity Diagram)
+* **Database:** PostgreSQL / MySQL (Spring Data JPA + Hibernate)
+* **Frontend:** Thymeleaf / React (REST API Integration)
+* **API Documentation:** OpenAPI 3.0 / Swagger UI
+* **Testing:** JUnit 5 + Mockito
+* **Deployment & DevOps:** Docker, Docker Compose, Render / Railway
 
 ---
 
-## 🗂️ Database & Transaction Safety
+## 🏗️ System Architecture & SOLID Principles
 
-* **Transaction Management:** ใช้ `@Transactional` ในขั้นตอนสำคัญ เช่น การบันทึกผลการเล่น (Quiz Completion), การตัดหัก Item Boosters, และการอัปเดต User Level/Streak เพื่อป้องกันปัญหา Race Condition และ Data Inconsistency
-* **Database Relationships:** ออกแบบ ER Diagram ตามหลัก 3NF รองรับความสัมพันธ์แบบ `One-to-Many` (User -> QuizSessions), `Many-to-Many` (User -> Badges, Question -> Category)
+### 1. Strict Layered Architecture
+โปรเจกต์นี้แยก Layer ชัดเจนและห้ามเรียกข้าม Layer:
+`Presentation (Controller) -> Service Layer -> Repository Layer -> Entity / Domain` (พร้อมการแปลงข้อมูลผ่าน DTO & Mappers)
 
----
+### 2. Applied Design Patterns (GoF)
+เลือกเน้น **Behavioral Patterns** (3 แบบหลัก) เพื่อแก้ปัญหาทางตรงตามข้อกำหนดรายวิชา:
 
-## 👥 Team Members & Responsibilities (Group of 5)
+* **Strategy Pattern (`ScoringStrategy`):** คำนวณคะแนนยืดหยุ่นตาม Win Streak, เวลาที่เหลือ และความยากคำถาม
+* **Observer Pattern (`GameCompletionEventListener`):** ส่ง Event อัปเดต EXP, Badge และ Leaderboard อัตโนมัติเมื่อผู้เล่นเล่นจบเกม
+* **Command Pattern (`SubmitAnswerCommand`):** แคปซูล Action การตอบคำถามเพื่อรองรับ Validation และ Audit Log
 
-| Name | Role | Core Responsibilities |
-| :--- | :--- | :--- |
-| **นายรัฐภูมิ เกิดพระจีน** | **Software Architect & Lead UML** | Requirement Analysis, UML Modeling (Use Case, Class Diagram, Sequence Diagram), Database Schema Design & ERD |
-| **นายธนกฤต ละครพล** | **Core Quiz & Dynamic Engine** | Question Factory, Dynamic Difficulty Logic, Game Session Management, Command Pattern for Submissions |
-| **นายณพวิทย์ วงษ์ประเสริฐ** | **Scoring & Gamification Logic** | Scoring Strategy, Level/EXP Multiplier, Win Streak Tracker, Decorator Pattern for Boosters |
-| **นายพีรพัฒน์ ป้องกันยา** | **Event Observer & Integration** | Observer Pattern for Achievements/Leaderboards, Fact Insights Provider, External Adapter Services |
-| **นายก้องภพ โชควิริยะ** | **Spring Boot Core & Security/Proxy** | Spring Boot Controllers, Security & Caching Proxy, `@Transactional` Management, Database Repositories |
+*(ส่วนประกอบเพิ่มเติม: **Factory Pattern** สำหรับสร้าง Object คำถามประเภทต่างๆ และ **Proxy Pattern** สำหรับ Caching คำถามยอดนิยม)*
 
 ---
 
-## 🚀 Getting Started
+## 🗂️ Database Design (ER Diagram)
 
-### Prerequisites
-* Java JDK 17 or higher
-* Apache Maven 3.8+
-* MySQL 8.0+
+ระบบประกอบด้วย **6 ตารางหลัก** (ตรงตามเกณฑ์ข้อกำหนด):
+1. `users` - ข้อมูลผู้ใช้งานหลัก
+2. `user_profiles` - ข้อมูลโปรไฟล์เพิ่มเติม (**One-to-One** กับ `users`)
+3. `categories` - หมวดหมู่คำถาม (**One-to-Many** กับ `questions`)
+4. `questions` - คลังคำถามและเกร็ดความรู้ (Fun Facts)
+5. `quiz_sessions` - ประวัติการเข้าเล่นแต่ละรอบ (**One-to-Many** จาก `users`)
+6. `quiz_details` - รายละเอียดการตอบแต่ละข้อ (**One-to-Many** จาก `quiz_sessions`)
 
-### Installation & Run
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-username/battle-iq.git
-   cd battle-iq
-   ```
-
-2. **Configure Database:**
-   แก้ไขไฟล์ `src/main/resources/application.yml` ตั้งค่า Database Connection:
-   ```yaml
-   spring:
-     datasource:
-       url: jdbc:mysql://localhost:3306/battle_iq_db
-       username: your_username
-       password: your_password
-     jpa:
-       hibernate:
-         ddl-auto: update
-   ```
-
-3. **Build & Run Application:**
-   ```bash
-   mvn clean install
-   mvn spring-boot:run
-   ```
+*(ดูรายละเอียดเพิ่มเติมได้ที่ `doc/diagrams/erd_diagram.png` และ Data Dictionary ในโฟลเดอร์ `doc/`)*
 
 ---
 
-## 📄 License
-This project is developed as part of the *Principles of Software Design and Development* course. All rights reserved.
+## 📂 Project Structure
+
+```text
+Battle-IQ/
+├── code/                   # Source code (Spring Boot + Frontend)
+│   ├── src/main/java/com/battleiq/
+│   │   ├── config/
+│   │   ├── controller/api/
+│   │   ├── service/
+│   │   ├── repository/
+│   │   ├── domain/entity/
+│   │   ├── dto/
+│   │   └── exception/
+├── test/                   # JUnit 5 & Mockito Unit Tests
+├── doc/                    # Documentation ทั้งหมด
+│   ├── diagrams/           # Use Case, Class, Sequence, ERD, Activity Diagrams
+│   ├── slide/              # Presentation Slide (.pptx / .pdf)
+│   ├── solid-analysis.md   # วิเคราะห์ SOLID Principles รายไฟล์
+│   └── design-patterns.md  # ตารางและคำอธิบาย Design Patterns
+├── img/                    # รูปภาพประกอบและ Screenshots
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
