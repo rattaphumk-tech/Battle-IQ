@@ -13,6 +13,7 @@ import com.battleiq.domain.entity.QuizSession;
 import com.battleiq.domain.entity.User;
 import com.battleiq.dto.QuizSessionRequestDTO;
 import com.battleiq.dto.QuizSessionResponseDTO;
+import com.battleiq.exception.ResourceNotFoundException;
 import com.battleiq.repository.CategoryRepository;
 import com.battleiq.repository.QuizSessionRepository;
 import com.battleiq.repository.UserRepository;
@@ -33,11 +34,13 @@ public class QuizSessionService {
      */
     @Transactional
     public QuizSessionResponseDTO startSession(QuizSessionRequestDTO request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+       // ตัวอย่างตอนหา User ไม่เจอ
+User user = userRepository.findById(request.getUserId())
+        .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
 
-        Category category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+// ตัวอย่างตอนหา Category ไม่เจอ
+Category category = categoryRepository.findById(request.getCategoryId())
+        .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
 
         // ดึงชุดคำถามสุ่ม 5 ข้อผ่าน Factory
         List<Question> questions = questionFactory.createQuizQuestions(category.getId(), 5);
