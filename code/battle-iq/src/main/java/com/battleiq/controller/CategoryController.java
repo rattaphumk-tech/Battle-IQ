@@ -1,6 +1,7 @@
 package com.battleiq.controller;
 
 import com.battleiq.domain.entity.Category;
+import com.battleiq.exception.CategoryNotFoundException;
 import com.battleiq.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,10 @@ public class CategoryController {
         List<Category> categories = categoryRepository.findAll();
         return ResponseEntity.ok(categories);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable("id") Long id) {
-        return categoryRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found with ID: " + id));
+        return ResponseEntity.ok(category);
     }
 }
