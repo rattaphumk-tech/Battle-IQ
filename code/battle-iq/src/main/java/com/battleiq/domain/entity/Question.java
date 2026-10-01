@@ -1,5 +1,5 @@
 package com.battleiq.domain.entity;
-
+import jakarta.validation.constraints.NotBlank;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,6 +32,7 @@ public class Question {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @NotBlank(message = "Question text cannot be blank")
     @Column(nullable = false, columnDefinition = "TEXT")
     private String questionText;
 
