@@ -13,6 +13,16 @@ import com.battleiq.dto.ErrorResponseDTO;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    // Handle Custom DataNotFoundException
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleDataNotFound(DataNotFoundException ex) {
+        ErrorResponseDTO error = new ErrorResponseDTO(
+            HttpStatus.NOT_FOUND.value(),
+            ex.getMessage(),
+            LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
     // Handle Custom ResourceNotFoundException
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponseDTO> handleResourceNotFound(ResourceNotFoundException ex) {
