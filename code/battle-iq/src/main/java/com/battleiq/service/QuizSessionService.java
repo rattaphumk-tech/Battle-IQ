@@ -13,6 +13,7 @@ import com.battleiq.domain.entity.QuizSession;
 import com.battleiq.domain.entity.User;
 import com.battleiq.dto.QuizSessionRequestDTO;
 import com.battleiq.dto.QuizSessionResponseDTO;
+import com.battleiq.exception.ConflictException;
 import com.battleiq.exception.ResourceNotFoundException;
 import com.battleiq.repository.CategoryRepository;
 import com.battleiq.repository.QuizSessionRepository;
@@ -86,6 +87,10 @@ Category category = categoryRepository.findById(request.getCategoryId())
     public QuizSessionResponseDTO completeSession(Long sessionId, Integer finalScore) {
         QuizSession session = quizSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Session not found with ID: " + sessionId));
+
+        if (!"IN_PROGRESS".equals(session.getStatus())) {
+            throw new ConflictException("Session " + sessionId + " is already " + session.getStatus());
+        }
 
         session.setStatus("COMPLETED");
         session.setTotalScore(finalScore);
