@@ -1,7 +1,7 @@
 package com.battleiq.controller;
 
-import com.battleiq.domain.entity.Question;
-import com.battleiq.repository.QuestionRepository;
+import com.battleiq.dto.QuestionDTO;
+import com.battleiq.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +13,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuestionController {
 
-    private final QuestionRepository questionRepository;
+    private final QuestionService questionService;
 
     @GetMapping("/category/{categoryId}")
-    public ResponseEntity<List<Question>> getQuestionsByCategory(@PathVariable("categoryId") Long categoryId) {
-        List<Question> questions = questionRepository.findByCategoryId(categoryId);
-        return ResponseEntity.ok(questions);
+    public ResponseEntity<List<QuestionDTO>> getQuestionsByCategory(@PathVariable("categoryId") Long categoryId) {
+        return ResponseEntity.ok(questionService.getQuestionsByCategory(categoryId));
     }
 }
