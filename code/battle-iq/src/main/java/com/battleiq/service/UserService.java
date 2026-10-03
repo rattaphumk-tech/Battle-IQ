@@ -6,9 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.battleiq.domain.entity.User;
 import com.battleiq.domain.entity.UserProfile;
+import com.battleiq.dto.LoginRequestDTO;
 import com.battleiq.dto.UserRequestDTO;
 import com.battleiq.dto.UserResponseDTO;
 import com.battleiq.exception.ConflictException;
+import com.battleiq.exception.InvalidCredentialsException;
 import com.battleiq.exception.ResourceNotFoundException;
 import com.battleiq.repository.UserRepository;
 
@@ -47,6 +49,16 @@ public class UserService {
 
         User savedUser = userRepository.save(user);
         return toResponse(savedUser);
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponseDTO login(LoginRequestDTO request) {
+        User user = userRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new InvalidCredentialsException("Invalid username or password"));
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid username or password");
+        }
+        return toResponse(user);
     }
 
     @Transactional(readOnly = true)

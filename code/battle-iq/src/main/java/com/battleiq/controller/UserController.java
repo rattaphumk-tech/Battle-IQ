@@ -1,5 +1,6 @@
 package com.battleiq.controller;
 
+import com.battleiq.dto.LoginRequestDTO;
 import com.battleiq.dto.UserRequestDTO;
 import com.battleiq.dto.UserResponseDTO;
 import com.battleiq.service.UserService;
@@ -20,6 +21,11 @@ public class UserController {
     public ResponseEntity<UserResponseDTO> registerUser(@Valid @RequestBody UserRequestDTO request) {
         UserResponseDTO response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponseDTO> login(@Valid @RequestBody LoginRequestDTO request) {
+        return ResponseEntity.ok(userService.login(request));
     }
 
     @GetMapping("/{id}")
