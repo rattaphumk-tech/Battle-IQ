@@ -1,8 +1,7 @@
 package com.battleiq.controller;
 
-import com.battleiq.domain.entity.Category;
-import com.battleiq.exception.CategoryNotFoundException;
-import com.battleiq.repository.CategoryRepository;
+import com.battleiq.dto.CategoryDTO;
+import com.battleiq.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,17 +13,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryController {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<List<Category>> getAllCategories() {
-        List<Category> categories = categoryRepository.findAll();
-        return ResponseEntity.ok(categories);
+    public ResponseEntity<List<CategoryDTO>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable("id") Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException("Category not found with ID: " + id));
-        return ResponseEntity.ok(category);
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 }
