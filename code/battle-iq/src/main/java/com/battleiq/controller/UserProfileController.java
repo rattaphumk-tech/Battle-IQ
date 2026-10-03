@@ -1,7 +1,7 @@
 package com.battleiq.controller;
 
-import com.battleiq.domain.entity.UserProfile;
-import com.battleiq.repository.UserProfileRepository;
+import com.battleiq.dto.UserResponseDTO;
+import com.battleiq.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserProfileController {
 
-    private final UserProfileRepository userProfileRepository;
+    private final UserService userService;
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<UserProfile> getProfileByUserId(@PathVariable("userId") Long userId) {
-        return userProfileRepository.findByUserId(userId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserResponseDTO> getProfileByUserId(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 }
