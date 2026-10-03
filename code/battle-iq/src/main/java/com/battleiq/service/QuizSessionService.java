@@ -85,7 +85,7 @@ Category category = categoryRepository.findById(request.getCategoryId())
     @Transactional
     public QuizSessionResponseDTO completeSession(Long sessionId, Integer finalScore) {
         QuizSession session = quizSessionRepository.findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session not found with ID: " + sessionId));
 
         session.setStatus("COMPLETED");
         session.setTotalScore(finalScore);
