@@ -16,6 +16,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findByCategoryId(Long categoryId);
 
     // Custom Query สำหรับสุ่มคำถามตามหมวดหมู่
-    @Query("SELECT q FROM Question q WHERE q.category.id = :categoryId ORDER BY FUNCTION('RAND')")
+    @Query("SELECT q FROM Question q WHERE q.category.id = :categoryId ORDER BY FUNCTION('RANDOM')")
     List<Question> findRandomQuestionsByCategoryId(@Param("categoryId") Long categoryId, Pageable pageable);
 }

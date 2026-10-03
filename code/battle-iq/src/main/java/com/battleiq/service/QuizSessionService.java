@@ -3,6 +3,7 @@ package com.battleiq.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,8 @@ import com.battleiq.domain.entity.QuizSession;
 import com.battleiq.domain.entity.User;
 import com.battleiq.dto.QuizSessionRequestDTO;
 import com.battleiq.dto.QuizSessionResponseDTO;
+import com.battleiq.event.GameCompletedEvent;
+import com.battleiq.exception.ConflictException;
 import com.battleiq.exception.ResourceNotFoundException;
 import com.battleiq.repository.CategoryRepository;
 import com.battleiq.repository.QuizSessionRepository;
@@ -28,6 +31,7 @@ public class QuizSessionService {
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
     private final QuestionFactory questionFactory;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * เริ่มต้นรอบการเล่นเกมใหม่ (Start Quiz Session)
@@ -85,13 +89,20 @@ Category category = categoryRepository.findById(request.getCategoryId())
     @Transactional
     public QuizSessionResponseDTO completeSession(Long sessionId, Integer finalScore) {
         QuizSession session = quizSessionRepository.findById(sessionId)
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Session not found with ID: " + sessionId));
+
+        if (!"IN_PROGRESS".equals(session.getStatus())) {
+            throw new ConflictException("Session " + sessionId + " is already " + session.getStatus());
+        }
 
         session.setStatus("COMPLETED");
         session.setTotalScore(finalScore);
         session.setCompletedAt(LocalDateTime.now());
 
         QuizSession updatedSession = quizSessionRepository.save(session);
+
+        eventPublisher.publishEvent(
+                new GameCompletedEvent(updatedSession.getId(), updatedSession.getUser().getId(), finalScore));
 
         return QuizSessionResponseDTO.builder()
                 .sessionId(updatedSession.getId())

@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import com.battleiq.domain.entity.Question;
+import com.battleiq.exception.QuestionNotFoundException;
 import com.battleiq.repository.QuestionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class QuestionFactory {
         List<Question> randomQuestions = questionRepository.findRandomQuestionsByCategoryId(categoryId, PageRequest.of(0, count));
 
         if (randomQuestions.isEmpty()) {
-            throw new RuntimeException("No questions available for category ID: " + categoryId);
+            throw new QuestionNotFoundException("No questions available for category ID: " + categoryId);
         }
 
         return randomQuestions;
