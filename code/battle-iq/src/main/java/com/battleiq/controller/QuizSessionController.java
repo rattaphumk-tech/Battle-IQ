@@ -1,5 +1,6 @@
 package com.battleiq.controller;
 
+import com.battleiq.dto.QuestionDTO;
 import com.battleiq.dto.QuizSessionRequestDTO;
 import com.battleiq.dto.QuizSessionResponseDTO;
 import com.battleiq.service.QuizSessionService;
@@ -8,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/quiz-sessions")
@@ -22,12 +25,14 @@ public class QuizSessionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/{id}/questions")
+    public ResponseEntity<List<QuestionDTO>> getSessionQuestions(@PathVariable("id") Long sessionId) {
+        return ResponseEntity.ok(quizSessionService.getSessionQuestions(sessionId));
+    }
 
     @PostMapping("/{id}/complete")
-    public ResponseEntity<QuizSessionResponseDTO> completeQuizSession(
-            @PathVariable("id") Long sessionId,
-            @RequestParam("score") Integer finalScore) {
-        QuizSessionResponseDTO response = quizSessionService.completeSession(sessionId, finalScore);
+    public ResponseEntity<QuizSessionResponseDTO> completeQuizSession(@PathVariable("id") Long sessionId) {
+        QuizSessionResponseDTO response = quizSessionService.completeSession(sessionId);
         return ResponseEntity.ok(response);
     }
 }
