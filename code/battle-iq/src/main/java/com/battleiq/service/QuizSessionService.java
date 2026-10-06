@@ -12,6 +12,7 @@ import com.battleiq.domain.entity.Question;
 import com.battleiq.domain.entity.QuizDetail;
 import com.battleiq.domain.entity.QuizSession;
 import com.battleiq.domain.entity.User;
+import com.battleiq.dto.QuestionDTO;
 import com.battleiq.dto.QuizSessionRequestDTO;
 import com.battleiq.dto.QuizSessionResponseDTO;
 import com.battleiq.event.GameCompletedEvent;
@@ -27,6 +28,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuizSessionService {
 
+    private static final int QUESTIONS_PER_SESSION = 5;
+
     private final QuizSessionRepository quizSessionRepository;
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
@@ -38,16 +41,14 @@ public class QuizSessionService {
      */
     @Transactional
     public QuizSessionResponseDTO startSession(QuizSessionRequestDTO request) {
-       // ตัวอย่างตอนหา User ไม่เจอ
-User user = userRepository.findById(request.getUserId())
-        .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + request.getUserId()));
 
-// ตัวอย่างตอนหา Category ไม่เจอ
-Category category = categoryRepository.findById(request.getCategoryId())
-        .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with ID: " + request.getCategoryId()));
 
-        // ดึงชุดคำถามสุ่ม 5 ข้อผ่าน Factory
-        List<Question> questions = questionFactory.createQuizQuestions(category.getId(), 5);
+        // ดึงชุดคำถามสุ่มผ่าน Factory
+        List<Question> questions = questionFactory.createQuizQuestions(category.getId(), QUESTIONS_PER_SESSION);
 
         QuizSession session = QuizSession.builder()
                 .user(user)
@@ -70,49 +71,75 @@ Category category = categoryRepository.findById(request.getCategoryId())
         }
 
         QuizSession savedSession = quizSessionRepository.save(session);
-
-        return QuizSessionResponseDTO.builder()
-                .sessionId(savedSession.getId())
-                .userId(user.getId())
-                .categoryId(category.getId())
-                .categoryName(category.getName())
-                .totalQuestions(savedSession.getTotalQuestions())
-                .totalScore(savedSession.getTotalScore())
-                .status(savedSession.getStatus())
-                .createdAt(savedSession.getCreatedAt())
-                .build();
+        return toResponse(savedSession);
     }
 
     /**
-     * จบรอบการเล่นเกมและสรุปคะแนน (Complete Quiz Session)
+     * ดึงคำถามทั้งหมดของรอบที่กำลังเล่น (ไม่ส่งเฉลย)
+     */
+    @Transactional(readOnly = true)
+    public List<QuestionDTO> getSessionQuestions(Long sessionId) {
+        QuizSession session = findSession(sessionId);
+        return session.getDetails().stream()
+                .map(detail -> toQuestionDTO(detail.getQuestion()))
+                .toList();
+    }
+
+    /**
+     * จบรอบการเล่นเกมและสรุปคะแนนจากคำตอบที่บันทึกไว้ (Complete Quiz Session)
      */
     @Transactional
-    public QuizSessionResponseDTO completeSession(Long sessionId, Integer finalScore) {
-        QuizSession session = quizSessionRepository.findById(sessionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Session not found with ID: " + sessionId));
+    public QuizSessionResponseDTO completeSession(Long sessionId) {
+        QuizSession session = findSession(sessionId);
 
         if (!"IN_PROGRESS".equals(session.getStatus())) {
             throw new ConflictException("Session " + sessionId + " is already " + session.getStatus());
         }
 
+        int totalScore = session.getDetails().stream()
+                .mapToInt(QuizDetail::getScoreEarned)
+                .sum();
+
         session.setStatus("COMPLETED");
-        session.setTotalScore(finalScore);
+        session.setTotalScore(totalScore);
         session.setCompletedAt(LocalDateTime.now());
 
         QuizSession updatedSession = quizSessionRepository.save(session);
 
         eventPublisher.publishEvent(
-                new GameCompletedEvent(updatedSession.getId(), updatedSession.getUser().getId(), finalScore));
+                new GameCompletedEvent(updatedSession.getId(), updatedSession.getUser().getId(), totalScore));
 
+        return toResponse(updatedSession);
+    }
+
+    private QuizSession findSession(Long sessionId) {
+        return quizSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Session not found with ID: " + sessionId));
+    }
+
+    private QuizSessionResponseDTO toResponse(QuizSession session) {
         return QuizSessionResponseDTO.builder()
-                .sessionId(updatedSession.getId())
-                .userId(updatedSession.getUser().getId())
-                .categoryId(updatedSession.getCategory().getId())
-                .categoryName(updatedSession.getCategory().getName())
-                .totalQuestions(updatedSession.getTotalQuestions())
-                .totalScore(updatedSession.getTotalScore())
-                .status(updatedSession.getStatus())
-                .createdAt(updatedSession.getCreatedAt())
+                .sessionId(session.getId())
+                .userId(session.getUser().getId())
+                .categoryId(session.getCategory().getId())
+                .categoryName(session.getCategory().getName())
+                .totalQuestions(session.getTotalQuestions())
+                .totalScore(session.getTotalScore())
+                .status(session.getStatus())
+                .createdAt(session.getCreatedAt())
+                .build();
+    }
+
+    private QuestionDTO toQuestionDTO(Question question) {
+        return QuestionDTO.builder()
+                .id(question.getId())
+                .categoryId(question.getCategory().getId())
+                .questionText(question.getQuestionText())
+                .optionA(question.getOptionA())
+                .optionB(question.getOptionB())
+                .optionC(question.getOptionC())
+                .optionD(question.getOptionD())
+                .timeLimitSeconds(question.getTimeLimitSeconds())
                 .build();
     }
 }
