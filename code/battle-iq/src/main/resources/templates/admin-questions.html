@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('จัดการคำถาม')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card">
+        <h2 id="form-title">เพิ่มคำถาม</h2>
+        <form id="question-form">
+            <input type="hidden" id="question-id">
+            <label for="categoryId">หมวดหมู่</label>
+            <select id="categoryId" required></select>
+            <label for="questionText">คำถาม</label>
+            <textarea id="questionText" rows="2" required></textarea>
+            <label for="optionA">ตัวเลือก A</label>
+            <input id="optionA" required>
+            <label for="optionB">ตัวเลือก B</label>
+            <input id="optionB" required>
+            <label for="optionC">ตัวเลือก C</label>
+            <input id="optionC" required>
+            <label for="optionD">ตัวเลือก D</label>
+            <input id="optionD" required>
+            <label for="correctAnswer">คำตอบที่ถูก</label>
+            <select id="correctAnswer">
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+                <option>D</option>
+            </select>
+            <label for="timeLimitSeconds">เวลาต่อข้อ (วินาที)</label>
+            <input id="timeLimitSeconds" type="number" min="5" max="120" value="15">
+            <button type="submit">บันทึก</button>
+            <button type="button" class="secondary" onclick="resetForm()">ล้างฟอร์ม</button>
+        </form>
+        <div id="message" class="message"></div>
+    </div>
+
+    <div class="card">
+        <h2>คำถามทั้งหมด</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>หมวดหมู่</th>
+                <th>คำถาม</th>
+                <th>เฉลย</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="question-rows"></tbody>
+        </table>
+        <div class="pager">
+            <button class="secondary" id="prev-button" onclick="loadQuestions(currentPage - 1)">ก่อนหน้า</button>
+            <span id="page-info"></span>
+            <button class="secondary" id="next-button" onclick="loadQuestions(currentPage + 1)">ถัดไป</button>
+        </div>
+    </div>
+</main>
+
+<script>
+    const PAGE_SIZE = 10;
+    const fields = ['categoryId', 'questionText', 'optionA', 'optionB', 'optionC', 'optionD',
+        'correctAnswer', 'timeLimitSeconds'];
+    let currentPage = 0;
+    let questions = {};
+
+    async function loadCategories() {
+        const categories = await api('/categories');
+        document.getElementById('categoryId').innerHTML = categories
+            .map(c => '<option value="' + c.id + '">' + escapeHtml(c.name) + '</option>')
+            .join('');
+    }
+
+    async function loadQuestions(page) {
+        const data = await api('/questions?page=' + page + '&size=' + PAGE_SIZE + '&sort=id,desc');
+        const pageInfo = data.page || data;
+        currentPage = pageInfo.number;
+        questions = {};
+        data.content.forEach(q => questions[q.id] = q);
+
+        document.getElementById('question-rows').innerHTML = data.content.map(q =>
+            '<tr><td>' + q.id + '</td>'
+            + '<td>' + escapeHtml(q.categoryName) + '</td>'
+            + '<td>' + escapeHtml(q.questionText) + '</td>'
+            + '<td>' + escapeHtml(q.correctAnswer) + '</td>'
+            + '<td><button onclick="editQuestion(' + q.id + ')">แก้ไข</button> '
+            + '<button class="danger" onclick="deleteQuestion(' + q.id + ')">ลบ</button></td></tr>'
+        ).join('');
+
+        document.getElementById('page-info').textContent =
+            'หน้า ' + (pageInfo.number + 1) + ' / ' + Math.max(pageInfo.totalPages, 1);
+        document.getElementById('prev-button').disabled = pageInfo.number <= 0;
+        document.getElementById('next-button').disabled = pageInfo.number >= pageInfo.totalPages - 1;
+    }
+
+    function editQuestion(id) {
+        const question = questions[id];
+        document.getElementById('question-id').value = id;
+        fields.forEach(name => document.getElementById(name).value = question[name]);
+        document.getElementById('form-title').textContent = 'แก้ไขคำถาม #' + id;
+        window.scrollTo(0, 0);
+    }
+
+    function resetForm() {
+        document.getElementById('question-form').reset();
+        document.getElementById('question-id').value = '';
+        document.getElementById('form-title').textContent = 'เพิ่มคำถาม';
+    }
+
+    async function deleteQuestion(id) {
+        if (!confirm('ลบคำถาม #' + id + ' ใช่หรือไม่')) {
+            return;
+        }
+        try {
+            await api('/questions/' + id, { method: 'DELETE' });
+            showMessage('message', 'ลบคำถามแล้ว', false);
+            loadQuestions(currentPage);
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    document.getElementById('question-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const id = document.getElementById('question-id').value;
+        const body = {};
+        fields.forEach(name => body[name] = document.getElementById(name).value);
+        body.categoryId = Number(body.categoryId);
+        body.timeLimitSeconds = Number(body.timeLimitSeconds);
+
+        try {
+            if (id) {
+                await api('/questions/' + id, { method: 'PUT', body: JSON.stringify(body) });
+            } else {
+                await api('/questions', { method: 'POST', body: JSON.stringify(body) });
+            }
+            showMessage('message', 'บันทึกคำถามแล้ว', false);
+            resetForm();
+            loadQuestions(id ? currentPage : 0);
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    });
+
+    loadCategories().then(() => loadQuestions(0))
+        .catch(error => showMessage('message', error.message, true));
+</script>
+</body>
+</html>
