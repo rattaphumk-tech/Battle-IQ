@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('เล่นเกม')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card">
+        <span class="timer">เหลือ <span id="timer">0</span> วินาที</span>
+        <p id="progress"></p>
+        <h2 id="question-text"></h2>
+        <div id="options"></div>
+        <div id="message" class="message"></div>
+        <p>คะแนนรอบนี้: <strong id="score">0</strong></p>
+        <button id="next-button" hidden onclick="nextQuestion()">ข้อถัดไป</button>
+    </div>
+</main>
+
+<script>
+    const user = requireLogin();
+    const sessionId = getQueryParam('session');
+    const optionKeys = ['A', 'B', 'C', 'D'];
+    let questions = [];
+    let index = 0;
+    let score = 0;
+    let secondsLeft = 0;
+    let timerId = null;
+
+    async function loadQuestions() {
+        if (!sessionId) {
+            location.href = '/categories';
+            return;
+        }
+        try {
+            questions = await api('/quiz-sessions/' + sessionId + '/questions');
+            showQuestion();
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    function showQuestion() {
+        const question = questions[index];
+        document.getElementById('progress').textContent = 'ข้อ ' + (index + 1) + ' / ' + questions.length;
+        document.getElementById('question-text').textContent = question.questionText;
+        document.getElementById('options').innerHTML = optionKeys.map(key =>
+            '<button class="option" id="option-' + key + '" onclick="submitAnswer(\'' + key + '\')">'
+            + key + '. ' + escapeHtml(question['option' + key]) + '</button>'
+        ).join('');
+        document.getElementById('next-button').hidden = true;
+        showMessage('message', '', false);
+        startTimer(question.timeLimitSeconds);
+    }
+
+    function startTimer(limit) {
+        secondsLeft = limit;
+        document.getElementById('timer').textContent = secondsLeft;
+        timerId = setInterval(() => {
+            secondsLeft--;
+            document.getElementById('timer').textContent = secondsLeft;
+            if (secondsLeft <= 0) {
+                timeUp();
+            }
+        }, 1000);
+    }
+
+    function lockOptions() {
+        clearInterval(timerId);
+        optionKeys.forEach(key => document.getElementById('option-' + key).disabled = true);
+        const isLast = index === questions.length - 1;
+        const nextButton = document.getElementById('next-button');
+        nextButton.textContent = isLast ? 'ดูผลคะแนน' : 'ข้อถัดไป';
+        nextButton.hidden = false;
+    }
+
+    // หมดเวลาโดยไม่ได้ตอบ ข้อนี้ได้ 0 คะแนน
+    function timeUp() {
+        lockOptions();
+        showMessage('message', 'หมดเวลา', true);
+    }
+
+    async function submitAnswer(key) {
+        const question = questions[index];
+        const timeTaken = question.timeLimitSeconds - secondsLeft;
+        lockOptions();
+        try {
+            const result = await api('/quiz-sessions/' + sessionId + '/answers', {
+                method: 'POST',
+                body: JSON.stringify({ questionId: question.id, answer: key, timeTakenSeconds: timeTaken })
+            });
+            document.getElementById('option-' + result.correctAnswer).classList.add('correct');
+            if (result.correct) {
+                score += result.scoreEarned;
+                document.getElementById('score').textContent = score;
+                showMessage('message', 'ถูกต้อง +' + result.scoreEarned + ' คะแนน', false);
+            } else {
+                document.getElementById('option-' + key).classList.add('wrong');
+                showMessage('message', 'ผิด คำตอบที่ถูกคือ ' + result.correctAnswer, true);
+            }
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    async function nextQuestion() {
+        if (index < questions.length - 1) {
+            index++;
+            showQuestion();
+            return;
+        }
+        try {
+            await api('/quiz-sessions/' + sessionId + '/complete', { method: 'POST' });
+            location.href = '/result?session=' + sessionId;
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    if (user) {
+        loadQuestions();
+    }
+</script>
+</body>
+</html>
