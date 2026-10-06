@@ -1,0 +1,145 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: #f4f6fb;
+    color: #1f2937;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #1e3a8a;
+}
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 14px;
+}
+
+.navbar .brand {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 900px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+label {
+    display: block;
+    margin: 10px 0 4px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+button, .button {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+button:disabled {
+    background: #94a3b8;
+    cursor: default;
+}
+
+button.secondary {
+    background: #64748b;
+}
+
+button.danger {
+    background: #dc2626;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+th, td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.message {
+    min-height: 20px;
+    margin: 10px 0;
+}
+
+.message.error {
+    color: #dc2626;
+}
+
+.message.success {
+    color: #16a34a;
+}
+
+.option {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    text-align: left;
+    background: #e0e7ff;
+    color: #1f2937;
+}
+
+.option.correct {
+    background: #bbf7d0;
+}
+
+.option.wrong {
+    background: #fecaca;
+}
+
+.timer {
+    float: right;
+    font-weight: bold;
+}
+
+.pager {
+    margin-top: 12px;
+}
+
+.pager span {
+    margin: 0 10px;
+}
