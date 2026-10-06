@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('สรุปผล')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card">
+        <h2>สรุปผลการเล่น</h2>
+        <p>หมวดหมู่: <strong id="categoryName"></strong></p>
+        <p>ตอบถูก: <strong id="correctCount"></strong> จาก <span id="totalQuestions"></span> ข้อ</p>
+        <p>คะแนนรอบนี้: <strong id="totalScore"></strong></p>
+        <div id="message" class="message"></div>
+        <a class="button" th:href="@{/categories}">เล่นอีกครั้ง</a>
+        <a class="button" th:href="@{/leaderboard}">ดูอันดับ</a>
+    </div>
+
+    <div class="card">
+        <h2>รายละเอียดแต่ละข้อ</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>คำถาม</th>
+                <th>ตอบ</th>
+                <th>เฉลย</th>
+                <th>คะแนน</th>
+            </tr>
+            </thead>
+            <tbody id="answer-rows"></tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    const user = requireLogin();
+    const sessionId = getQueryParam('session');
+
+    async function loadResult() {
+        try {
+            const result = await api('/quiz-sessions/' + sessionId + '/result');
+            document.getElementById('categoryName').textContent = result.categoryName;
+            document.getElementById('correctCount').textContent = result.correctCount;
+            document.getElementById('totalQuestions').textContent = result.totalQuestions;
+            document.getElementById('totalScore').textContent = result.totalScore;
+            document.getElementById('answer-rows').innerHTML = result.answers.map(answer =>
+                '<tr><td>' + escapeHtml(answer.questionText) + '</td>'
+                + '<td>' + escapeHtml(answer.userAns || 'ไม่ได้ตอบ') + (answer.correct ? ' ✔' : ' ✘') + '</td>'
+                + '<td>' + escapeHtml(answer.correctAnswer) + '</td>'
+                + '<td>' + answer.scoreEarned + '</td></tr>'
+            ).join('');
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    if (user && sessionId) {
+        loadResult();
+    }
+</script>
+</body>
+</html>

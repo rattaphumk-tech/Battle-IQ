@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('ประวัติการเล่น')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card">
+        <h2>ประวัติการเล่น</h2>
+        <div id="message" class="message"></div>
+        <table>
+            <thead>
+            <tr>
+                <th>วันที่</th>
+                <th>หมวดหมู่</th>
+                <th>สถานะ</th>
+                <th>คะแนน</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="history-rows"></tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    const user = requireLogin();
+    const statusText = { IN_PROGRESS: 'กำลังเล่น', COMPLETED: 'จบแล้ว', ABANDONED: 'ยกเลิก' };
+
+    function actionLink(session) {
+        if (session.status === 'COMPLETED') {
+            return '<a href="/result?session=' + session.sessionId + '">ดูผล</a>';
+        }
+        if (session.status === 'IN_PROGRESS') {
+            return '<a href="/play?session=' + session.sessionId + '">เล่นต่อ</a>';
+        }
+        return '';
+    }
+
+    async function loadHistory() {
+        try {
+            const sessions = await api('/users/' + user.id + '/quiz-sessions');
+            if (sessions.length === 0) {
+                showMessage('message', 'ยังไม่มีประวัติการเล่น', false);
+            }
+            document.getElementById('history-rows').innerHTML = sessions.map(session =>
+                '<tr><td>' + new Date(session.createdAt).toLocaleString('th-TH') + '</td>'
+                + '<td>' + escapeHtml(session.categoryName) + '</td>'
+                + '<td>' + (statusText[session.status] || session.status) + '</td>'
+                + '<td>' + session.totalScore + '</td>'
+                + '<td>' + actionLink(session) + '</td></tr>'
+            ).join('');
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    if (user) {
+        loadHistory();
+    }
+</script>
+</body>
+</html>
