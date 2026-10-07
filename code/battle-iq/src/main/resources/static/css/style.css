@@ -409,6 +409,106 @@ tbody tr:hover {
     }
 }
 
+/* หน้าสมัครสมาชิกและเข้าสู่ระบบ */
+.auth-page {
+    max-width: 480px;
+}
+
+.auth-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+.auth-head h2 {
+    margin: 0;
+    font-size: 22px;
+}
+
+.auth-tag {
+    color: #facc15;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.auth-card {
+    padding: 28px;
+}
+
+.auth-card label {
+    margin-top: 18px;
+    font-size: 15px;
+}
+
+.auth-card label:first-child {
+    margin-top: 0;
+}
+
+.auth-card input {
+    padding: 12px 14px;
+    font-size: 15px;
+    border-radius: 8px;
+}
+
+.auth-card .help {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-field input {
+    padding-right: 44px;
+}
+
+.password-field .eye {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    margin: 0;
+    padding: 4px 8px;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 16px;
+    border-radius: 6px;
+}
+
+.password-field .eye:hover {
+    background: #f1f5f9;
+    color: #475569;
+    transform: translateY(-50%);
+    filter: none;
+}
+
+.password-field .eye.on {
+    color: #2563eb;
+}
+
+.auth-submit {
+    width: 100%;
+    margin-top: 20px;
+    padding: 13px;
+    font-size: 16px;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+}
+
+.auth-foot {
+    text-align: center;
+    color: #cbd5e1;
+    margin-top: 18px;
+}
+
+.auth-foot a {
+    color: #facc15;
+    font-weight: 600;
+}
+
 /* ห้องแข่งขัน */
 .room-forms {
     display: grid;
