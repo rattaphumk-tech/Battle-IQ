@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('สมัครสมาชิก')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card">
+        <h2>สมัครสมาชิก</h2>
+        <form id="register-form">
+            <label for="username">ชื่อผู้ใช้ (3-50 ตัวอักษร)</label>
+            <input id="username" minlength="3" maxlength="50" required>
+            <label for="email">อีเมล</label>
+            <input id="email" type="email" required>
+            <label for="password">รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)</label>
+            <input id="password" type="password" minlength="6" required>
+            <label for="fullName">ชื่อที่แสดง</label>
+            <input id="fullName" maxlength="100">
+            <button type="submit">สมัครสมาชิก</button>
+        </form>
+        <div id="message" class="message"></div>
+        <p>มีบัญชีแล้ว? <a th:href="@{/login}">เข้าสู่ระบบ</a></p>
+    </div>
+</main>
+
+<script>
+    document.getElementById('register-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const body = {
+            username: document.getElementById('username').value.trim(),
+            email: document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+            fullName: document.getElementById('fullName').value.trim()
+        };
+        try {
+            const user = await api('/users/register', { method: 'POST', body: JSON.stringify(body) });
+            setUser(user);
+            location.href = '/categories';
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    });
+</script>
+</body>
+</html>
