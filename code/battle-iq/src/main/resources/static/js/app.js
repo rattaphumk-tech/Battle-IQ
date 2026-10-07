@@ -51,8 +51,10 @@ function renderNavUser() {
             ? '<img class="avatar" src="' + escapeHtml(user.avatarUrl) + '" alt="">'
             : '<span class="avatar">' + escapeHtml(name.charAt(0).toUpperCase()) + '</span>';
         box.innerHTML = '<a class="user-chip" href="/profile" title="ดูโปรไฟล์">' + avatar
+            + '<span class="user-text">'
             + '<span class="user-name">' + escapeHtml(name) + '</span>'
-            + '<span class="user-level">Lv.' + (user.level || 1) + '</span></a>'
+            + '<span class="user-level">Lv.' + (user.level || 1) + ' · ' + (user.totalScore || 0) + ' คะแนน</span>'
+            + '</span></a>'
             + '<button class="nav-logout" onclick="logout()">ออกจากระบบ</button>';
     } else {
         box.innerHTML = '<a class="nav-button" href="/login">เข้าสู่ระบบ</a>'
