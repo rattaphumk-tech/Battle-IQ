@@ -39,12 +39,12 @@
 ```text
 Presentation   controller/        REST Controller (/api/v1/...) และ controller/web (Thymeleaf page)
      ↓
-Service        service/           Business logic, @Transactional, Design Patterns
+Service        service/ (interface) + service/impl/   Business logic, @Transactional, Design Patterns
      ↓
 Repository     repository/        Spring Data JPA
      ↓
 Domain         domain/entity      Entity 8 ตัว, domain/enums
-+ DTO          dto/               Request / Response DTO แยกจาก Entity
++ DTO          dto/ + mapper/     Request / Response DTO แยกจาก Entity, mapper แปลง entity → DTO
 + Cross-cut    exception/, config/, event/
 ```
 
@@ -269,9 +269,11 @@ Battle-IQ/
 │   │   ├── config/                 # PasswordConfig (BCrypt), OpenApiConfig
 │   │   ├── controller/             # REST Controller
 │   │   │   └── web/                # Thymeleaf page controller
-│   │   ├── service/
+│   │   ├── service/                # Service interface
+│   │   │   ├── impl/               # Service implementation
 │   │   │   ├── scoring/            # Strategy pattern
 │   │   │   └── command/            # Command pattern
+│   │   ├── mapper/                 # Entity -> DTO
 │   │   ├── event/                  # Observer pattern (ApplicationEvent)
 │   │   ├── repository/
 │   │   ├── domain/entity/

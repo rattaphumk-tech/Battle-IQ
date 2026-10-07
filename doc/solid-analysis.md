@@ -49,8 +49,12 @@
 | `service/QuizSessionService.java` | field `ApplicationEventPublisher eventPublisher` | ขึ้นกับ abstraction ของ Spring ไม่รู้ว่าใครรับ event |
 | `service/*Service.java` | field `*Repository` | ขึ้นกับ interface ของ Spring Data (JPA implementation ถูกสร้างตอน runtime) |
 
+| `controller/*Controller.java` | field `private final XxxService` | Controller ขึ้นกับ interface ใน `service/` ส่วน implementation อยู่ใน `service/impl/*ServiceImpl` Spring inject ให้ตอน runtime เปลี่ยน implementation ได้โดย controller ไม่เปลี่ยน |
+| `service/impl/RoomServiceImpl.java` | field `QuizSessionService quizSessionService` | service เรียก service อื่นผ่าน interface เช่นกัน |
+| `mapper/*Mapper.java` | static method `toDTO`, `toResponse` | การแปลง entity → DTO แยกออกจาก service เป็นแพ็กเกจ `mapper/` service ไม่ต้องรู้โครงสร้าง DTO |
+
 ## จุดที่ยังไม่สมบูรณ์
 
-- Service ส่วนใหญ่เป็น concrete class ที่ controller เรียกตรง ยังไม่ได้แยกเป็น interface + `service/impl` ตามโครงสร้างตัวอย่างในใบงาน การ inject ยังเป็น constructor injection ทำให้เปลี่ยนเป็น interface ได้โดยไม่กระทบ controller
 - `ScoringStrategySelector` ขึ้นกับ concrete strategy ทั้งสามเพราะต้องรู้ว่าจะเลือกตัวไหน เป็นข้อยกเว้นที่ยอมรับได้สำหรับ class ที่ทำหน้าที่เลือก
-- การแปลง entity → DTO อยู่ใน private method ของแต่ละ service ยังไม่ได้แยกเป็นแพ็กเกจ `mapper/`
+- `QuestionFactory` เป็น concrete class ที่ `QuizSessionServiceImpl` และ `RoomServiceImpl` เรียกตรง เพราะมีวิธีสร้างแบบเดียว ถ้าในอนาคตมีการสุ่มแบบอื่น (ตามความยาก) ควรแยกเป็น interface
+- DTO ยังอยู่ในแพ็กเกจ `dto/` เดียว ไม่ได้แยก `dto/request` กับ `dto/response` ตามตัวอย่างในใบงาน ใช้ชื่อไฟล์ (`*RequestDTO`, `*ResponseDTO`, `*DTO`) แยกแทน
