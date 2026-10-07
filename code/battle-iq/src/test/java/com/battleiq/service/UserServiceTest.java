@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.battleiq.service.impl.UserServiceImpl;
 import com.battleiq.domain.entity.User;
 import com.battleiq.domain.entity.UserProfile;
 import com.battleiq.dto.LoginRequestDTO;
@@ -39,7 +40,7 @@ class UserServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @InjectMocks
-    private UserService userService;
+    private UserServiceImpl userService;
 
     private UserRequestDTO registerRequest;
 

@@ -22,6 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.battleiq.service.impl.RoomServiceImpl;
 import com.battleiq.domain.entity.Category;
 import com.battleiq.domain.entity.Question;
 import com.battleiq.domain.entity.QuizSession;
@@ -51,7 +52,7 @@ class RoomServiceTest {
     private QuizSessionService quizSessionService;
 
     @InjectMocks
-    private RoomService roomService;
+    private RoomServiceImpl roomService;
 
     private final Category category = Category.builder().id(3L).name("Science").build();
     private final User host = User.builder().id(1L).username("host").build();

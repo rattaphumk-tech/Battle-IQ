@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.battleiq.service.impl.UserProfileServiceImpl;
 import com.battleiq.domain.entity.UserProfile;
 import com.battleiq.dto.ProfileUpdateDTO;
 import com.battleiq.exception.ResourceNotFoundException;
@@ -25,7 +26,7 @@ class UserProfileServiceTest {
     private UserProfileRepository userProfileRepository;
 
     @InjectMocks
-    private UserProfileService userProfileService;
+    private UserProfileServiceImpl userProfileService;
 
     private UserProfile profile(int totalScore, int streak) {
         return UserProfile.builder().id(1L).totalScore(totalScore).level(1).currentStreak(streak).build();
