@@ -665,25 +665,35 @@ tr.me td {
     filter: none;
 }
 
-.nav-button {
+.navbar .nav-button {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
     margin: 0;
-    padding: 8px 16px;
+    padding: 0 18px;
     border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
     color: #fff;
-    text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.nav-button.gold {
-    background: linear-gradient(135deg, #f59e0b, #facc15);
-    color: #1e1b4b;
-    border: none;
     font-weight: 600;
+    text-decoration: none;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
 }
 
 .navbar .nav-button:hover {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-    filter: brightness(1.1);
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #fff;
+    transform: translateY(-1px);
+}
+
+.navbar .nav-button.gold {
+    background: linear-gradient(135deg, #f59e0b, #facc15);
+    border-color: #facc15;
+    color: #1e1b4b;
+}
+
+.navbar .nav-button.gold:hover {
+    background: linear-gradient(135deg, #fbbf24, #fde047);
+    border-color: #fde047;
 }
 
 @media (max-width: 700px) {
