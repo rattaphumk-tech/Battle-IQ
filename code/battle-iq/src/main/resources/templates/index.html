@@ -5,12 +5,19 @@
 <nav th:replace="~{fragments/layout :: nav}"></nav>
 
 <main class="container">
-    <div class="card">
-        <h1>Battle IQ</h1>
-        <p>เกมตอบคำถามวัดความรู้ตามหมวดหมู่ ตอบถูกและตอบเร็วได้คะแนนมาก เล่นต่อเนื่องได้โบนัส streak</p>
-        <a class="button" th:href="@{/categories}">เริ่มเล่น</a>
-        <a class="button" th:href="@{/leaderboard}">ดูอันดับ</a>
-    </div>
+    <section class="hero">
+        <h1>Battle <span>IQ</span></h1>
+        <p>เกมตอบคำถามวัดความรู้ตามหมวดหมู่ ตอบถูกและตอบเร็วได้คะแนนมาก เล่นต่อเนื่องได้โบนัส streak แล้วไต่อันดับกับเพื่อน</p>
+        <a class="button big gold" th:href="@{/categories}">เริ่มเล่น</a>
+        <a class="button big" th:href="@{/leaderboard}">ดูอันดับ</a>
+
+        <div class="features">
+            <div class="feature"><strong>5</strong>ข้อต่อรอบ สุ่มจากหมวดที่เลือก</div>
+            <div class="feature"><strong>+10</strong>โบนัสเมื่อตอบเร็ว</div>
+            <div class="feature"><strong>x1.5</strong>ตัวคูณสูงสุดจาก win streak</div>
+            <div class="feature"><strong>Lv.</strong>เลเวลขึ้นทุก 100 คะแนน</div>
+        </div>
+    </section>
 </main>
 </body>
 </html>
