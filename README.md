@@ -14,7 +14,7 @@
 | 2 | นายพีรพัฒน์ ป้องกันยา | 673380053-3 | 01 | `pheerapat_6733800533_01` | **ผู้ใช้และโปรไฟล์ (Observer):** สมัคร/login, BCrypt, GameCompletedEvent, ห้องแข่งขัน, ตั้งค่าฐานข้อมูล, แผนทดสอบ, README |
 | 3 | นายก้องภพ โชควิริยะ | 673380030-5 | 01 | `kongpob_6733800305_01` | **คำถามและการส่งคำตอบ (Command):** CRUD คำถาม, SubmitAnswerCommand, Swagger, โครงหน้าเว็บ |
 | 4 | นายธนกฤต ละครพล | 673380269-0 | 01 | `thanakit_6733802690_01` | **การคิดคะแนน (Strategy):** ScoringStrategy 3 แบบ, ผลการเล่นและประวัติ, Repository, schema.sql |
-| 5 | นายณพวิทย์ วงษ์ประเสริฐ | 673380062-2 | 01 | `noppavit_6733802666_01` | **หมวดหมู่และ Leaderboard:** CRUD หมวดหมู่, Leaderboard, Controller ชุดแรก, Deploy |
+| 5 | นายณพวิทย์ วงษ์ประเสริฐ | 673380266-6 | 01 | `noppavit_6733802666_01` | **หมวดหมู่และ Leaderboard:** CRUD หมวดหมู่, Leaderboard, Controller ชุดแรก, Deploy |
 
 ---
 
