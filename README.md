@@ -151,7 +151,7 @@ erDiagram
 - **One-to-Many:** `categories` → `questions`, `users` → `quiz_sessions`, `quiz_sessions` → `quiz_details`, `rooms` → `room_players`
 - **Many-to-Many:** `users` ↔ `rooms` ผ่านตารางกลาง `room_players` ที่มีข้อมูลเพิ่ม (session ของผู้เล่นในห้องนั้น)
 - Index และ constraint อยู่ใน [schema.sql](code/battle-iq/src/main/resources/schema.sql) ข้อมูลตั้งต้นอยู่ใน [data.sql](code/battle-iq/src/main/resources/data.sql) (3 หมวด 15 คำถาม)
-- Data Dictionary และ diagram อื่นอยู่ใน [doc/diagrams/](doc/diagrams/)
+- Data Dictionary อยู่ใน [doc/data-dictionary.md](doc/data-dictionary.md) และ diagram ทั้งหมดอยู่ใน [doc/diagrams/](doc/diagrams/)
 
 ---
 
