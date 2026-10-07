@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('หน้าแรก')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card">
+        <h1>Battle IQ</h1>
+        <p>เกมตอบคำถามวัดความรู้ตามหมวดหมู่ ตอบถูกและตอบเร็วได้คะแนนมาก เล่นต่อเนื่องได้โบนัส streak</p>
+        <a class="button" th:href="@{/categories}">เริ่มเล่น</a>
+        <a class="button" th:href="@{/leaderboard}">ดูอันดับ</a>
+    </div>
+</main>
+</body>
+</html>
