@@ -14,7 +14,7 @@
         <form id="register-form" novalidate>
             <label for="username">ชื่อผู้ใช้งาน / Username</label>
             <input id="username" placeholder="ชื่อผู้ใช้ของคุณ" minlength="3" maxlength="50" autocomplete="username" required>
-            <p class="help">ความยาว 3–50 ตัวอักษร ใช้สำหรับเข้าสู่ระบบและแสดงในอันดับ</p>
+            <p class="help">ภาษาอังกฤษ ตัวเลข หรือขีดล่าง (_) เท่านั้น ความยาว 3–50 ตัวอักษร ใช้สำหรับเข้าสู่ระบบและแสดงในอันดับ</p>
 
             <label for="email">อีเมล / Email</label>
             <input id="email" type="email" placeholder="user@example.com" autocomplete="email" required>
@@ -25,7 +25,7 @@
                 <input id="password" type="password" placeholder="••••••••" minlength="6" autocomplete="new-password" required>
                 <button type="button" class="eye" onclick="togglePassword('password', this)" aria-label="แสดงรหัสผ่าน">👁</button>
             </div>
-            <p class="help">อย่างน้อย 6 ตัวอักษร</p>
+            <p class="help">6–72 ตัวอักษร</p>
 
             <label for="confirm">ยืนยันรหัสผ่าน / Repeat Password</label>
             <div class="password-field">
@@ -60,8 +60,8 @@
         const password = document.getElementById('password').value;
         const confirm = document.getElementById('confirm').value;
 
-        if (username.length < 3) {
-            showMessage('message', 'ชื่อผู้ใช้ต้องมีอย่างน้อย 3 ตัวอักษร', true);
+        if (!/^[A-Za-z0-9_]{3,50}$/.test(username)) {
+            showMessage('message', 'ชื่อผู้ใช้ต้องเป็นภาษาอังกฤษ ตัวเลข หรือขีดล่าง ความยาว 3–50 ตัวอักษร', true);
             return;
         }
         if (password.length < 6) {
