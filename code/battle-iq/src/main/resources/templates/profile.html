@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('โปรไฟล์')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card">
+        <h2>โปรไฟล์ของฉัน</h2>
+        <img id="avatar" alt="" width="96" height="96" hidden>
+        <p>ชื่อผู้ใช้: <strong id="username"></strong></p>
+        <p>อีเมล: <span id="email"></span></p>
+        <p>เลเวล: <strong id="level"></strong></p>
+        <p>คะแนนรวม: <strong id="totalScore"></strong></p>
+        <p>Win streak: <strong id="currentStreak"></strong></p>
+    </div>
+
+    <div class="card">
+        <h2>แก้ไขโปรไฟล์</h2>
+        <form id="profile-form">
+            <label for="fullName">ชื่อที่แสดง</label>
+            <input id="fullName" maxlength="100">
+            <label for="avatarUrl">ลิงก์รูปโปรไฟล์</label>
+            <input id="avatarUrl" maxlength="255">
+            <button type="submit">บันทึก</button>
+        </form>
+        <div id="message" class="message"></div>
+    </div>
+</main>
+
+<script>
+    const user = requireLogin();
+
+    function renderProfile(profile) {
+        document.getElementById('username').textContent = profile.username;
+        document.getElementById('email').textContent = profile.email;
+        document.getElementById('level').textContent = profile.level;
+        document.getElementById('totalScore').textContent = profile.totalScore;
+        document.getElementById('currentStreak').textContent = profile.currentStreak;
+        document.getElementById('fullName').value = profile.fullName || '';
+        document.getElementById('avatarUrl').value = profile.avatarUrl || '';
+
+        const avatar = document.getElementById('avatar');
+        avatar.hidden = !profile.avatarUrl;
+        if (profile.avatarUrl) {
+            avatar.src = profile.avatarUrl;
+        }
+    }
+
+    async function loadProfile() {
+        try {
+            renderProfile(await api('/profiles/user/' + user.id));
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    document.getElementById('profile-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const body = {
+            fullName: document.getElementById('fullName').value.trim(),
+            avatarUrl: document.getElementById('avatarUrl').value.trim()
+        };
+        try {
+            const profile = await api('/profiles/user/' + user.id, { method: 'PUT', body: JSON.stringify(body) });
+            setUser(profile);
+            renderProfile(profile);
+            showMessage('message', 'บันทึกโปรไฟล์แล้ว', false);
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    });
+
+    if (user) {
+        loadProfile();
+    }
+</script>
+</body>
+</html>
