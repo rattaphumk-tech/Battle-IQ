@@ -42,9 +42,32 @@ function requireLogin() {
     return user;
 }
 
+// แสดงจากค่าที่เก็บไว้ก่อน แล้วดึงค่าล่าสุดจากเซิร์ฟเวอร์มาอัปเดต (คะแนน/เลเวลเปลี่ยนหลังเล่นจบ)
 function renderNavUser() {
-    const box = document.getElementById('nav-user');
+    drawNavUser(getUser());
+    refreshNavUser();
+}
+
+async function refreshNavUser() {
     const user = getUser();
+    if (!user) {
+        return;
+    }
+    try {
+        const fresh = await api('/profiles/user/' + user.id);
+        setUser(fresh);
+        drawNavUser(fresh);
+    } catch (error) {
+        // บัญชีถูกลบไปแล้ว ให้ล้างสถานะ login
+        if (String(error.message).includes('not found')) {
+            localStorage.removeItem('user');
+            drawNavUser(null);
+        }
+    }
+}
+
+function drawNavUser(user) {
+    const box = document.getElementById('nav-user');
     if (user) {
         const name = user.fullName || user.username;
         const avatar = user.avatarUrl
