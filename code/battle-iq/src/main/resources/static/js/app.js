@@ -46,11 +46,32 @@ function renderNavUser() {
     const box = document.getElementById('nav-user');
     const user = getUser();
     if (user) {
-        box.innerHTML = '<a href="/profile">' + escapeHtml(user.username) + '</a>'
-            + ' <a href="#" onclick="logout(); return false;">ออกจากระบบ</a>';
+        const name = user.fullName || user.username;
+        const avatar = user.avatarUrl
+            ? '<img class="avatar" src="' + escapeHtml(user.avatarUrl) + '" alt="">'
+            : '<span class="avatar">' + escapeHtml(name.charAt(0).toUpperCase()) + '</span>';
+        box.innerHTML = '<a class="user-chip" href="/profile" title="ดูโปรไฟล์">' + avatar
+            + '<span class="user-name">' + escapeHtml(name) + '</span>'
+            + '<span class="user-level">Lv.' + (user.level || 1) + '</span></a>'
+            + '<button class="nav-logout" onclick="logout()">ออกจากระบบ</button>';
     } else {
-        box.innerHTML = '<a href="/login">เข้าสู่ระบบ</a> <a href="/register">สมัครสมาชิก</a>';
+        box.innerHTML = '<a class="nav-button" href="/login">เข้าสู่ระบบ</a>'
+            + '<a class="nav-button gold" href="/register">สมัครสมาชิก</a>';
     }
+    markActiveLink();
+}
+
+// ไฮไลต์เมนูของหน้าที่เปิดอยู่
+function markActiveLink() {
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        if (link.getAttribute('href') === location.pathname) {
+            link.classList.add('active');
+            const dropdown = link.closest('.dropdown');
+            if (dropdown) {
+                dropdown.querySelector('.dropdown-toggle').classList.add('active');
+            }
+        }
+    });
 }
 
 function escapeHtml(text) {
