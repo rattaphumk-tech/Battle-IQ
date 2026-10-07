@@ -409,6 +409,64 @@ tbody tr:hover {
     }
 }
 
+/* ห้องแข่งขัน */
+.room-forms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.room-forms h3 {
+    margin-top: 0;
+    color: #1e3a8a;
+}
+
+.code-input {
+    font-size: 24px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+}
+
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.room-header p {
+    margin: 4px 0;
+}
+
+.room-label {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.room-code {
+    font-size: 40px;
+    font-weight: bold;
+    letter-spacing: 8px;
+    color: #1e3a8a;
+}
+
+.room-status {
+    text-align: right;
+}
+
+.room-status p {
+    color: #64748b;
+    font-size: 14px;
+}
+
+tr.me td {
+    background: #fef9c3;
+    font-weight: 600;
+}
+
 /* เมนูด้านบน */
 .nav-links {
     display: flex;
