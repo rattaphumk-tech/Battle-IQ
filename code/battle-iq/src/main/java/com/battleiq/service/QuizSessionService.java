@@ -28,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuizSessionService {
 
-    private static final int QUESTIONS_PER_SESSION = 5;
+    public static final int QUESTIONS_PER_SESSION = 5;
 
     private final QuizSessionRepository quizSessionRepository;
     private final UserRepository userRepository;
@@ -50,6 +50,14 @@ public class QuizSessionService {
         // ดึงชุดคำถามสุ่มผ่าน Factory
         List<Question> questions = questionFactory.createQuizQuestions(category.getId(), QUESTIONS_PER_SESSION);
 
+        return toResponse(createSession(user, category, questions));
+    }
+
+    /**
+     * สร้าง session จากชุดคำถามที่กำหนด ใช้ทั้งเล่นคนเดียวและเล่นในห้องที่ทุกคนได้คำถามชุดเดียวกัน
+     */
+    @Transactional
+    public QuizSession createSession(User user, Category category, List<Question> questions) {
         QuizSession session = QuizSession.builder()
                 .user(user)
                 .category(category)
@@ -70,8 +78,7 @@ public class QuizSessionService {
             session.getDetails().add(detail);
         }
 
-        QuizSession savedSession = quizSessionRepository.save(session);
-        return toResponse(savedSession);
+        return quizSessionRepository.save(session);
     }
 
     /**
