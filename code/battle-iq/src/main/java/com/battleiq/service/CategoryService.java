@@ -2,8 +2,8 @@ package com.battleiq.service;
 
 import java.util.List;
 
-import com.battleiq.dto.CategoryDTO;
-import com.battleiq.dto.CategoryRequestDTO;
+import com.battleiq.dto.response.CategoryDTO;
+import com.battleiq.dto.request.CategoryRequestDTO;
 
 public interface CategoryService {
 

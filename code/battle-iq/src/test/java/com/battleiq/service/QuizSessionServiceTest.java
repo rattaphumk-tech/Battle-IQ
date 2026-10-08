@@ -22,7 +22,7 @@ import com.battleiq.domain.entity.Category;
 import com.battleiq.domain.entity.QuizDetail;
 import com.battleiq.domain.entity.QuizSession;
 import com.battleiq.domain.entity.User;
-import com.battleiq.dto.QuizSessionResponseDTO;
+import com.battleiq.dto.response.QuizSessionResponseDTO;
 import com.battleiq.event.GameCompletedEvent;
 import com.battleiq.exception.ConflictException;
 import com.battleiq.exception.ResourceNotFoundException;

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.battleiq.domain.entity.UserProfile;
-import com.battleiq.dto.LeaderboardEntryDTO;
+import com.battleiq.dto.response.LeaderboardEntryDTO;
 import com.battleiq.mapper.LeaderboardMapper;
 import com.battleiq.repository.UserProfileRepository;
 import com.battleiq.service.LeaderboardService;

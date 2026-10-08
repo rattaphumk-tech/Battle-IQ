@@ -271,7 +271,8 @@ Battle-IQ/
 ├── code/battle-iq/                 # Spring Boot project
 │   ├── src/main/java/com/battleiq/
 │   │   ├── config/                 # PasswordConfig (BCrypt), OpenApiConfig
-│   │   ├── controller/             # REST Controller
+│   │   ├── controller/
+│   │   │   ├── api/                # REST Controller
 │   │   │   └── web/                # Thymeleaf page controller
 │   │   ├── service/                # Service interface
 │   │   │   ├── impl/               # Service implementation
@@ -283,6 +284,8 @@ Battle-IQ/
 │   │   ├── domain/entity/
 │   │   ├── domain/enums/
 │   │   ├── dto/
+│   │   │   ├── request/            # Request DTO (@Valid)
+│   │   │   └── response/           # Response DTO
 │   │   └── exception/              # Custom exception + GlobalExceptionHandler
 │   ├── src/main/resources/
 │   │   ├── templates/              # หน้าเว็บ Thymeleaf

@@ -13,7 +13,7 @@ import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.core.PropertyReferenceException;
 
-import com.battleiq.dto.ErrorResponseDTO;
+import com.battleiq.dto.response.ErrorResponseDTO;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

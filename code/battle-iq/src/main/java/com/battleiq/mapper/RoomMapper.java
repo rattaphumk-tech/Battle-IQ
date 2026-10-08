@@ -6,8 +6,8 @@ import java.util.List;
 import com.battleiq.domain.entity.QuizSession;
 import com.battleiq.domain.entity.Room;
 import com.battleiq.domain.entity.RoomPlayer;
-import com.battleiq.dto.RoomPlayerDTO;
-import com.battleiq.dto.RoomResponseDTO;
+import com.battleiq.dto.response.RoomPlayerDTO;
+import com.battleiq.dto.response.RoomResponseDTO;
 
 public final class RoomMapper {
 

@@ -4,9 +4,9 @@ import java.util.List;
 
 import com.battleiq.domain.entity.QuizDetail;
 import com.battleiq.domain.entity.QuizSession;
-import com.battleiq.dto.AnswerDetailDTO;
-import com.battleiq.dto.QuizResultDTO;
-import com.battleiq.dto.QuizSessionResponseDTO;
+import com.battleiq.dto.response.AnswerDetailDTO;
+import com.battleiq.dto.response.QuizResultDTO;
+import com.battleiq.dto.response.QuizSessionResponseDTO;
 
 public final class QuizSessionMapper {
 

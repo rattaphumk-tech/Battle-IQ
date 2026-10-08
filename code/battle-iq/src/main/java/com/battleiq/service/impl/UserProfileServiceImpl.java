@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.battleiq.domain.entity.UserProfile;
-import com.battleiq.dto.ProfileUpdateDTO;
+import com.battleiq.dto.request.ProfileUpdateDTO;
 import com.battleiq.exception.ResourceNotFoundException;
 import com.battleiq.repository.UserProfileRepository;
 import com.battleiq.service.UserProfileService;

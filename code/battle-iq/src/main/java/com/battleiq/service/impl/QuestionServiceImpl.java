@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.battleiq.domain.entity.Category;
 import com.battleiq.domain.entity.Question;
-import com.battleiq.dto.QuestionDTO;
-import com.battleiq.dto.QuestionDetailDTO;
-import com.battleiq.dto.QuestionRequestDTO;
+import com.battleiq.dto.response.QuestionDTO;
+import com.battleiq.dto.response.QuestionDetailDTO;
+import com.battleiq.dto.request.QuestionRequestDTO;
 import com.battleiq.exception.CategoryNotFoundException;
 import com.battleiq.exception.ConflictException;
 import com.battleiq.exception.QuestionNotFoundException;
