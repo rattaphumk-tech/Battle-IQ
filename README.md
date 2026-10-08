@@ -256,7 +256,11 @@ cd code/battle-iq
 
 ## Deployment URL
 
-ยังไม่ได้ deploy (รอ Render) — ใส่ URL ที่นี่เมื่อ deploy เสร็จ
+**https://battle-iq.onrender.com** (Render, Docker, แผนฟรี)
+
+- Swagger UI: https://battle-iq.onrender.com/swagger-ui.html
+- deploy อัตโนมัติจาก `render.yaml` ทุกครั้งที่กิ่งที่กำหนดมีการ push
+- แผนฟรีจะหลับเมื่อไม่มีการใช้งาน การเปิดครั้งแรกอาจใช้เวลาราว 1 นาที
 
 ---
 
