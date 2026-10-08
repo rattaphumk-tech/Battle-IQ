@@ -196,7 +196,6 @@
         <mxCell id="rel20_s" value="0..1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" connectable="0" parent="rel20"><mxGeometry x="-0.85" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
         <mxCell id="rel20_t" value="0..1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontStyle=1;fontSize=11;labelBackgroundColor=#ffffff;" vertex="1" connectable="0" parent="rel20"><mxGeometry x="0.85" relative="1" as="geometry"><mxPoint as="offset"/></mxGeometry></mxCell>
         <mxCell id="title" value="Battle IQ - ER Diagram (PostgreSQL, 8 ตาราง)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=18;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="60" y="10" width="500" height="30" as="geometry"/></mxCell>
-        <mxCell id="legend" value="- = private attribute (field ของ entity ทุกตัวเป็น private เข้าถึงผ่าน getter/setter), «PK» = Primary Key, «FK» = Foreign Key, «UK» = unique&lt;br&gt;ลูกศรชี้จากตารางลูก (ที่มี FK) ไปตารางแม่ ข้อความบนเส้นคือชื่อความสัมพันธ์ ตัวเลขปลายเส้นคือจำนวน (1, N, 0..1)&lt;br&gt;users ↔ rooms เป็น Many-to-Many ผ่าน room_players" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=11;fontColor=#000000;" vertex="1" parent="1"><mxGeometry x="760" y="640" width="560" height="60" as="geometry"/></mxCell>
       </root>
     </mxGraphModel>
   </diagram>
