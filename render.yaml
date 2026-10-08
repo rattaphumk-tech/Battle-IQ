@@ -4,7 +4,7 @@ services:
     runtime: docker
     plan: free
     region: singapore
-    branch: pheerapat_6733800533_01
+    branch: develop
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/v1/categories
     envVars:
