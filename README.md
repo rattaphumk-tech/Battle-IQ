@@ -292,6 +292,7 @@ Battle-IQ/
 │   └── src/test/java/              # Unit + Integration test
 ├── test/                           # แผนการทดสอบ, test case, รายงาน
 ├── doc/
+│   ├── report.docx / report.pdf  # รายงานโครงงาน 5 บท
 │   ├── diagrams/               # Diagram ทั้งหมด (PNG)
 │   ├── solid-analysis.md
 │   └── design-patterns.md
