@@ -2,8 +2,8 @@ package com.battleiq.service;
 
 import java.util.List;
 
-import com.battleiq.dto.QuizResultDTO;
-import com.battleiq.dto.QuizSessionResponseDTO;
+import com.battleiq.dto.response.QuizResultDTO;
+import com.battleiq.dto.response.QuizSessionResponseDTO;
 
 public interface QuizResultService {
 

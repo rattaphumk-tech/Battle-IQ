@@ -1,7 +1,7 @@
 package com.battleiq.service;
 
-import com.battleiq.dto.AnswerRequestDTO;
-import com.battleiq.dto.AnswerResultDTO;
+import com.battleiq.dto.request.AnswerRequestDTO;
+import com.battleiq.dto.response.AnswerResultDTO;
 
 public interface AnswerService {
 

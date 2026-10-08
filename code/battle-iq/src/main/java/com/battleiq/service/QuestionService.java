@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.battleiq.dto.QuestionDTO;
-import com.battleiq.dto.QuestionDetailDTO;
-import com.battleiq.dto.QuestionRequestDTO;
+import com.battleiq.dto.response.QuestionDTO;
+import com.battleiq.dto.response.QuestionDetailDTO;
+import com.battleiq.dto.request.QuestionRequestDTO;
 
 public interface QuestionService {
 

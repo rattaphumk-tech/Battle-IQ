@@ -6,9 +6,9 @@ import com.battleiq.domain.entity.Category;
 import com.battleiq.domain.entity.Question;
 import com.battleiq.domain.entity.QuizSession;
 import com.battleiq.domain.entity.User;
-import com.battleiq.dto.QuestionDTO;
-import com.battleiq.dto.QuizSessionRequestDTO;
-import com.battleiq.dto.QuizSessionResponseDTO;
+import com.battleiq.dto.response.QuestionDTO;
+import com.battleiq.dto.request.QuizSessionRequestDTO;
+import com.battleiq.dto.response.QuizSessionResponseDTO;
 
 public interface QuizSessionService {
 

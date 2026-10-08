@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.battleiq.service.impl.UserProfileServiceImpl;
 import com.battleiq.domain.entity.UserProfile;
-import com.battleiq.dto.ProfileUpdateDTO;
+import com.battleiq.dto.request.ProfileUpdateDTO;
 import com.battleiq.exception.ResourceNotFoundException;
 import com.battleiq.repository.UserProfileRepository;
 

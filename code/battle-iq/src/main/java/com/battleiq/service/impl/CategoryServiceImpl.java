@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.battleiq.domain.entity.Category;
-import com.battleiq.dto.CategoryDTO;
-import com.battleiq.dto.CategoryRequestDTO;
+import com.battleiq.dto.response.CategoryDTO;
+import com.battleiq.dto.request.CategoryRequestDTO;
 import com.battleiq.exception.CategoryNotFoundException;
 import com.battleiq.exception.ConflictException;
 import com.battleiq.mapper.CategoryMapper;

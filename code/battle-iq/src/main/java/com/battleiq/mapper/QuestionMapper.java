@@ -1,8 +1,8 @@
 package com.battleiq.mapper;
 
 import com.battleiq.domain.entity.Question;
-import com.battleiq.dto.QuestionDTO;
-import com.battleiq.dto.QuestionDetailDTO;
+import com.battleiq.dto.response.QuestionDTO;
+import com.battleiq.dto.response.QuestionDetailDTO;
 
 public final class QuestionMapper {
 

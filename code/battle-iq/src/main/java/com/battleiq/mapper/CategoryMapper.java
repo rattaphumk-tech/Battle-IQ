@@ -1,7 +1,7 @@
 package com.battleiq.mapper;
 
 import com.battleiq.domain.entity.Category;
-import com.battleiq.dto.CategoryDTO;
+import com.battleiq.dto.response.CategoryDTO;
 
 public final class CategoryMapper {
 

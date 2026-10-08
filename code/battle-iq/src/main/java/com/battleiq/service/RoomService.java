@@ -1,7 +1,7 @@
 package com.battleiq.service;
 
-import com.battleiq.dto.RoomCreateRequestDTO;
-import com.battleiq.dto.RoomResponseDTO;
+import com.battleiq.dto.request.RoomCreateRequestDTO;
+import com.battleiq.dto.response.RoomResponseDTO;
 
 public interface RoomService {
 

@@ -1,6 +1,6 @@
 package com.battleiq.service;
 
-import com.battleiq.dto.ProfileUpdateDTO;
+import com.battleiq.dto.request.ProfileUpdateDTO;
 
 public interface UserProfileService {
 

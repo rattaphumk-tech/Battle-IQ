@@ -6,12 +6,12 @@
 
 | ไฟล์ | ตำแหน่ง | เหตุผล |
 |---|---|---|
-| `controller/UserController.java` | ทั้งไฟล์ | รับ request ตรวจ `@Valid` และคืน `ResponseEntity` เท่านั้น ไม่มี business logic ส่งต่อ `UserService` ทุกอย่าง |
+| `controller/api/UserController.java` | ทั้งไฟล์ | รับ request ตรวจ `@Valid` และคืน `ResponseEntity` เท่านั้น ไม่มี business logic ส่งต่อ `UserService` ทุกอย่าง |
 | `service/UserService.java` | `register()` | ทำเฉพาะเรื่องบัญชี (ตรวจซ้ำ เข้ารหัส บันทึก) การเข้ารหัสแยกไปที่ `PasswordEncoder` การคิดเลเวลแยกไปที่ `UserProfileService` |
 | `service/UserProfileService.java` | `applyGameResult()` | รับผิดชอบเฉพาะกติกาโปรไฟล์ (คะแนนรวม เลเวล streak) ไม่รู้เรื่องรอบการเล่น |
 | `service/command/SubmitAnswerCommand.java` | `execute()` | ตรวจคำตอบและคิดคะแนน 1 ข้อ ไม่โหลดข้อมูลและไม่บันทึกเอง (หน้าที่ของ `AnswerService`) |
 | `exception/GlobalExceptionHandler.java` | ทั้งไฟล์ | แปลง exception เป็น `ErrorResponseDTO` ที่เดียว controller และ service ไม่ต้องจัดการ HTTP status |
-| `dto/*RequestDTO.java` | annotation บน field | กฎการตรวจข้อมูลเข้าอยู่ที่ DTO ไม่ปนใน service |
+| `dto/request/*RequestDTO.java` | annotation บน field | กฎการตรวจข้อมูลเข้าอยู่ที่ DTO ไม่ปนใน service |
 
 ## O — Open/Closed
 
@@ -37,7 +37,7 @@
 | `service/scoring/ScoringStrategy.java` | มีเมธอดเดียว `calculate()` | ผู้ implement ไม่ถูกบังคับให้มีเมธอดที่ไม่ใช้ |
 | `service/command/Command.java` | มีเมธอดเดียว `execute()` | interface เล็ก รองรับ command ชนิดอื่นในอนาคต |
 | `repository/UserRepository.java`, `UserProfileRepository.java`, `QuizDetailRepository.java` | เมธอดเฉพาะเช่น `existsByUsername`, `findByUserId`, `findByQuizSessionIdAndQuestionId` | แต่ละ repository มีเฉพาะ query ที่ service ของมันใช้ ไม่มี repository กลางก้อนใหญ่ |
-| `dto/` | `UserRequestDTO`, `LoginRequestDTO`, `ProfileUpdateDTO` แยกกัน | แต่ละ endpoint รับเฉพาะ field ที่ต้องใช้ ไม่ใช้ `User` entity เป็น request |
+| `dto/request/` | `UserRequestDTO`, `LoginRequestDTO`, `ProfileUpdateDTO` แยกกัน | แต่ละ endpoint รับเฉพาะ field ที่ต้องใช้ ไม่ใช้ `User` entity เป็น request |
 
 ## D — Dependency Inversion
 
@@ -49,7 +49,7 @@
 | `service/QuizSessionService.java` | field `ApplicationEventPublisher eventPublisher` | ขึ้นกับ abstraction ของ Spring ไม่รู้ว่าใครรับ event |
 | `service/*Service.java` | field `*Repository` | ขึ้นกับ interface ของ Spring Data (JPA implementation ถูกสร้างตอน runtime) |
 
-| `controller/*Controller.java` | field `private final XxxService` | Controller ขึ้นกับ interface ใน `service/` ส่วน implementation อยู่ใน `service/impl/*ServiceImpl` Spring inject ให้ตอน runtime เปลี่ยน implementation ได้โดย controller ไม่เปลี่ยน |
+| `controller/api/*Controller.java` | field `private final XxxService` | Controller ขึ้นกับ interface ใน `service/` ส่วน implementation อยู่ใน `service/impl/*ServiceImpl` Spring inject ให้ตอน runtime เปลี่ยน implementation ได้โดย controller ไม่เปลี่ยน |
 | `service/impl/RoomServiceImpl.java` | field `QuizSessionService quizSessionService` | service เรียก service อื่นผ่าน interface เช่นกัน |
 | `mapper/*Mapper.java` | static method `toDTO`, `toResponse` | การแปลง entity → DTO แยกออกจาก service เป็นแพ็กเกจ `mapper/` service ไม่ต้องรู้โครงสร้าง DTO |
 
@@ -57,4 +57,3 @@
 
 - `ScoringStrategySelector` ขึ้นกับ concrete strategy ทั้งสามเพราะต้องรู้ว่าจะเลือกตัวไหน เป็นข้อยกเว้นที่ยอมรับได้สำหรับ class ที่ทำหน้าที่เลือก
 - `QuestionFactory` เป็น concrete class ที่ `QuizSessionServiceImpl` และ `RoomServiceImpl` เรียกตรง เพราะมีวิธีสร้างแบบเดียว ถ้าในอนาคตมีการสุ่มแบบอื่น (ตามความยาก) ควรแยกเป็น interface
-- DTO ยังอยู่ในแพ็กเกจ `dto/` เดียว ไม่ได้แยก `dto/request` กับ `dto/response` ตามตัวอย่างในใบงาน ใช้ชื่อไฟล์ (`*RequestDTO`, `*ResponseDTO`, `*DTO`) แยกแทน

@@ -2,7 +2,7 @@ package com.battleiq.mapper;
 
 import com.battleiq.domain.entity.User;
 import com.battleiq.domain.entity.UserProfile;
-import com.battleiq.dto.UserResponseDTO;
+import com.battleiq.dto.response.UserResponseDTO;
 
 public final class UserMapper {
 

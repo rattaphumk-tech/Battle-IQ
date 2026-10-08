@@ -2,7 +2,7 @@ package com.battleiq.service.command;
 
 import com.battleiq.domain.entity.Question;
 import com.battleiq.domain.entity.QuizDetail;
-import com.battleiq.dto.AnswerResultDTO;
+import com.battleiq.dto.response.AnswerResultDTO;
 import com.battleiq.exception.ConflictException;
 import com.battleiq.service.scoring.ScoringStrategy;
 import com.battleiq.service.scoring.ScoringStrategySelector;

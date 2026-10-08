@@ -1,7 +1,7 @@
 package com.battleiq.mapper;
 
 import com.battleiq.domain.entity.UserProfile;
-import com.battleiq.dto.LeaderboardEntryDTO;
+import com.battleiq.dto.response.LeaderboardEntryDTO;
 
 public final class LeaderboardMapper {
 
