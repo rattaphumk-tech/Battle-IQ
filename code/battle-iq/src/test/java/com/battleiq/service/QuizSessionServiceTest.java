@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
+import com.battleiq.service.impl.QuizSessionServiceImpl;
 import com.battleiq.domain.entity.Category;
 import com.battleiq.domain.entity.QuizDetail;
 import com.battleiq.domain.entity.QuizSession;
@@ -44,7 +45,7 @@ class QuizSessionServiceTest {
     private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
-    private QuizSessionService quizSessionService;
+    private QuizSessionServiceImpl quizSessionService;
 
     private QuizSession sessionWithScores(String status, int... scores) {
         QuizSession session = QuizSession.builder()

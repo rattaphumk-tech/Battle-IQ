@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.battleiq.service.impl.CategoryServiceImpl;
 import com.battleiq.domain.entity.Category;
 import com.battleiq.dto.CategoryDTO;
 import com.battleiq.dto.CategoryRequestDTO;
@@ -29,7 +30,7 @@ class CategoryServiceTest {
     private CategoryRepository categoryRepository;
 
     @InjectMocks
-    private CategoryService categoryService;
+    private CategoryServiceImpl categoryService;
 
     private CategoryRequestDTO request(String name) {
         CategoryRequestDTO request = new CategoryRequestDTO();

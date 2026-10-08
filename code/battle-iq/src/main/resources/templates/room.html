@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('ห้องแข่งขัน')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card room-header">
+        <div>
+            <p class="room-label">รหัสห้อง</p>
+            <p class="room-code" id="room-code"></p>
+            <p>หมวดหมู่: <strong id="category-name"></strong></p>
+        </div>
+        <div class="room-status">
+            <span class="pill" id="status-pill"></span>
+            <p id="hint"></p>
+            <button id="start-button" hidden onclick="startRoom()">เริ่มแข่ง</button>
+            <a class="button secondary" id="back-button" th:href="@{/rooms}" hidden>กลับ</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 id="players-title">ผู้เล่นในห้อง</h3>
+        <div id="message" class="message"></div>
+        <table>
+            <thead>
+            <tr>
+                <th>อันดับ</th>
+                <th>ผู้เล่น</th>
+                <th>สถานะ</th>
+                <th>คะแนน</th>
+            </tr>
+            </thead>
+            <tbody id="player-rows"></tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    const user = requireLogin();
+    const code = getQueryParam('code');
+    const statusText = { WAITING: 'รอผู้เล่น', IN_PROGRESS: 'กำลังแข่ง', FINISHED: 'จบแล้ว' };
+    let pollId = null;
+    let redirected = false;
+
+    function playerStatus(player, roomStatus) {
+        if (roomStatus === 'WAITING') {
+            return player.host ? 'เจ้าของห้อง' : 'พร้อม';
+        }
+        return player.finished ? 'เล่นจบแล้ว' : 'กำลังเล่น';
+    }
+
+    function render(room) {
+        document.getElementById('room-code').textContent = room.code;
+        document.getElementById('category-name').textContent = room.categoryName;
+        document.getElementById('status-pill').textContent = statusText[room.status] || room.status;
+
+        const isHost = room.hostId === user.id;
+        const hint = document.getElementById('hint');
+        if (room.status === 'WAITING') {
+            hint.textContent = isHost
+                ? (room.players.length < 2 ? 'รอเพื่อนเข้าห้องอย่างน้อย 1 คน' : 'กดเริ่มแข่งเมื่อทุกคนพร้อม')
+                : 'รอเจ้าของห้องกดเริ่ม';
+        } else if (room.status === 'IN_PROGRESS') {
+            hint.textContent = 'รอให้ทุกคนเล่นจบ คะแนนจะอัปเดตอัตโนมัติ';
+        } else {
+            hint.textContent = 'จบการแข่งขัน';
+        }
+        document.getElementById('start-button').hidden = !(isHost && room.status === 'WAITING');
+        document.getElementById('start-button').disabled = room.players.length < 2;
+        document.getElementById('back-button').hidden = room.status !== 'FINISHED';
+        document.getElementById('players-title').textContent =
+            room.status === 'WAITING' ? 'ผู้เล่นในห้อง (' + room.players.length + '/8)' : 'ผลการแข่งขัน';
+
+        document.getElementById('player-rows').innerHTML = room.players.map((player, i) => {
+            const me = player.userId === user.id;
+            const rank = room.status === 'WAITING' ? '-' : (i + 1);
+            const medal = room.status === 'FINISHED' && i === 0 ? ' 🏆' : '';
+            return '<tr' + (me ? ' class="me"' : '') + '><td>' + rank + '</td>'
+                + '<td>' + escapeHtml(player.fullName || player.username) + medal + (me ? ' (คุณ)' : '') + '</td>'
+                + '<td>' + playerStatus(player, room.status) + '</td>'
+                + '<td>' + (player.score == null ? '-' : player.score) + '</td></tr>';
+        }).join('');
+    }
+
+    // เมื่อเกมเริ่มแล้วและเรายังไม่ได้เล่น ให้พาไปหน้าเล่นเกมของเรา
+    function redirectToPlay(room) {
+        const me = room.players.find(p => p.userId === user.id);
+        if (room.status === 'IN_PROGRESS' && me && me.sessionId && !me.finished && !redirected) {
+            redirected = true;
+            location.href = '/play?session=' + me.sessionId + '&room=' + room.code;
+        }
+    }
+
+    async function refresh() {
+        try {
+            const room = await api('/rooms/' + code);
+            render(room);
+            redirectToPlay(room);
+            if (room.status === 'FINISHED') {
+                clearInterval(pollId);
+            }
+        } catch (error) {
+            showMessage('message', error.message, true);
+            clearInterval(pollId);
+        }
+    }
+
+    async function startRoom() {
+        document.getElementById('start-button').disabled = true;
+        try {
+            const room = await api('/rooms/' + code + '/start', {
+                method: 'POST',
+                body: JSON.stringify({ userId: user.id })
+            });
+            render(room);
+            redirectToPlay(room);
+        } catch (error) {
+            showMessage('message', error.message, true);
+            document.getElementById('start-button').disabled = false;
+        }
+    }
+
+    if (user && code) {
+        refresh();
+        pollId = setInterval(refresh, 2000);
+    } else if (user) {
+        location.href = '/rooms';
+    }
+</script>
+</body>
+</html>

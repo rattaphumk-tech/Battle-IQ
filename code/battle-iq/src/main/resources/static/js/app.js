@@ -42,15 +42,79 @@ function requireLogin() {
     return user;
 }
 
+// แสดงจากค่าที่เก็บไว้ก่อน แล้วดึงค่าล่าสุดจากเซิร์ฟเวอร์มาอัปเดต (คะแนน/เลเวลเปลี่ยนหลังเล่นจบ)
 function renderNavUser() {
-    const box = document.getElementById('nav-user');
+    drawNavUser(getUser());
+    refreshNavUser();
+}
+
+async function refreshNavUser() {
     const user = getUser();
-    if (user) {
-        box.innerHTML = '<a href="/profile">' + escapeHtml(user.username) + '</a>'
-            + ' <a href="#" onclick="logout(); return false;">ออกจากระบบ</a>';
-    } else {
-        box.innerHTML = '<a href="/login">เข้าสู่ระบบ</a> <a href="/register">สมัครสมาชิก</a>';
+    if (!user) {
+        return;
     }
+    try {
+        const fresh = await api('/profiles/user/' + user.id);
+        setUser(fresh);
+        drawNavUser(fresh);
+    } catch (error) {
+        // บัญชีถูกลบไปแล้ว ให้ล้างสถานะ login
+        if (String(error.message).includes('not found')) {
+            localStorage.removeItem('user');
+            drawNavUser(null);
+        }
+    }
+}
+
+function drawNavUser(user) {
+    const box = document.getElementById('nav-user');
+    if (user) {
+        const name = user.fullName || user.username;
+        const avatar = user.avatarUrl
+            ? '<img class="avatar" src="' + escapeHtml(user.avatarUrl) + '" alt="">'
+            : '<span class="avatar">' + escapeHtml(name.charAt(0).toUpperCase()) + '</span>';
+        box.innerHTML = '<div class="user-menu">'
+            + '<button class="user-chip" type="button" onclick="toggleUserMenu(event)">' + avatar
+            + '<span class="user-text">'
+            + '<span class="user-name">' + escapeHtml(name) + '</span>'
+            + '<span class="user-level">Lv.' + (user.level || 1) + ' · ' + (user.totalScore || 0) + ' คะแนน</span>'
+            + '</span><span class="user-caret">▾</span></button>'
+            + '<div class="user-dropdown" id="user-dropdown">'
+            + '<a href="/profile">โปรไฟล์ของฉัน</a>'
+            + '<a href="/history">ประวัติการเล่น</a>'
+            + '<button type="button" class="nav-logout" onclick="logout()">ออกจากระบบ</button>'
+            + '</div></div>';
+    } else {
+        box.innerHTML = '<a class="nav-button" href="/login">เข้าสู่ระบบ</a>'
+            + '<a class="nav-button gold" href="/register">สมัครสมาชิก</a>';
+    }
+    markActiveLink();
+}
+
+function toggleUserMenu(event) {
+    event.stopPropagation();
+    document.getElementById('user-dropdown').classList.toggle('open');
+}
+
+// คลิกที่อื่นแล้วปิดเมนูผู้ใช้
+document.addEventListener('click', () => {
+    const dropdown = document.getElementById('user-dropdown');
+    if (dropdown) {
+        dropdown.classList.remove('open');
+    }
+});
+
+// ไฮไลต์เมนูของหน้าที่เปิดอยู่
+function markActiveLink() {
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        if (link.getAttribute('href') === location.pathname) {
+            link.classList.add('active');
+            const dropdown = link.closest('.dropdown');
+            if (dropdown) {
+                dropdown.querySelector('.dropdown-toggle').classList.add('active');
+            }
+        }
+    });
 }
 
 function escapeHtml(text) {

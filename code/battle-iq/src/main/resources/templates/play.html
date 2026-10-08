@@ -23,6 +23,7 @@
 <script>
     const user = requireLogin();
     const sessionId = getQueryParam('session');
+    const roomCode = getQueryParam('room');
     const optionKeys = ['A', 'B', 'C', 'D'];
     let questions = [];
     let index = 0;
@@ -137,7 +138,8 @@
         }
         try {
             await api('/quiz-sessions/' + sessionId + '/complete', { method: 'POST' });
-            location.href = '/result?session=' + sessionId;
+            // เล่นในห้องแข่ง ให้กลับไปดูอันดับของห้องแทนหน้าสรุปผลเดี่ยว
+            location.href = roomCode ? '/room?code=' + roomCode : '/result?session=' + sessionId;
         } catch (error) {
             showMessage('message', error.message, true);
         }

@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: battle-iq
+    runtime: docker
+    plan: free
+    region: singapore
+    branch: pheerapat_6733800533_01
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/categories
+    envVars:
+      - key: DB_URL
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: JAVA_TOOL_OPTIONS
+        value: -Xmx400m

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('แข่งกับเพื่อน')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <h2>แข่งกับเพื่อน</h2>
+    <div id="message" class="message"></div>
+
+    <div class="room-forms">
+        <div class="card">
+            <h3>สร้างห้องใหม่</h3>
+            <p>เลือกหมวดหมู่ แล้วส่งรหัสห้องให้เพื่อน ทุกคนจะได้คำถามชุดเดียวกัน</p>
+            <form id="create-form">
+                <label for="categoryId">หมวดหมู่</label>
+                <select id="categoryId" required></select>
+                <button type="submit">สร้างห้อง</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>เข้าร่วมห้อง</h3>
+            <p>ใส่รหัสห้อง 6 ตัวที่ได้จากเพื่อน</p>
+            <form id="join-form">
+                <label for="code">รหัสห้อง</label>
+                <input id="code" class="code-input" maxlength="6" placeholder="ABC123" required>
+                <button type="submit">เข้าร่วม</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+    const user = requireLogin();
+
+    async function loadCategories() {
+        const categories = await api('/categories');
+        document.getElementById('categoryId').innerHTML = categories
+            .map(c => '<option value="' + c.id + '">' + escapeHtml(c.name) + '</option>')
+            .join('');
+    }
+
+    document.getElementById('create-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        try {
+            const room = await api('/rooms', {
+                method: 'POST',
+                body: JSON.stringify({ hostId: user.id, categoryId: Number(document.getElementById('categoryId').value) })
+            });
+            location.href = '/room?code=' + room.code;
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    });
+
+    document.getElementById('join-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const code = document.getElementById('code').value.trim().toUpperCase();
+        try {
+            const room = await api('/rooms/' + code + '/join', {
+                method: 'POST',
+                body: JSON.stringify({ userId: user.id })
+            });
+            location.href = '/room?code=' + room.code;
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    });
+
+    if (user) {
+        loadCategories().catch(error => showMessage('message', error.message, true));
+    }
+</script>
+</body>
+</html>

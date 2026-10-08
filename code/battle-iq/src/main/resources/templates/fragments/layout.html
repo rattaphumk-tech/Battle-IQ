@@ -10,14 +10,20 @@
 <body>
 <nav th:fragment="nav" class="navbar">
     <a class="brand" th:href="@{/}">Battle IQ</a>
-    <div>
+    <div class="nav-links">
         <a th:href="@{/categories}">เล่นเกม</a>
+        <a th:href="@{/rooms}">แข่งกับเพื่อน</a>
         <a th:href="@{/leaderboard}">อันดับ</a>
         <a th:href="@{/history}">ประวัติ</a>
-        <a th:href="@{/admin/categories}">จัดการหมวดหมู่</a>
-        <a th:href="@{/admin/questions}">จัดการคำถาม</a>
-        <span id="nav-user"></span>
+        <div class="dropdown">
+            <span class="dropdown-toggle">จัดการ</span>
+            <div class="dropdown-menu">
+                <a th:href="@{/admin/categories}">หมวดหมู่</a>
+                <a th:href="@{/admin/questions}">คำถาม</a>
+            </div>
+        </div>
     </div>
+    <div class="nav-user" id="nav-user"></div>
     <script>renderNavUser();</script>
 </nav>
 </body>

@@ -4,34 +4,76 @@
 <body>
 <nav th:replace="~{fragments/layout :: nav}"></nav>
 
-<main class="container">
-    <div class="card">
+<main class="container auth-page">
+    <div class="auth-head">
         <h2>สมัครสมาชิก</h2>
-        <form id="register-form">
-            <label for="username">ชื่อผู้ใช้ (3-50 ตัวอักษร)</label>
-            <input id="username" minlength="3" maxlength="50" required>
-            <label for="email">อีเมล</label>
-            <input id="email" type="email" required>
-            <label for="password">รหัสผ่าน (อย่างน้อย 6 ตัวอักษร)</label>
-            <input id="password" type="password" minlength="6" required>
-            <label for="fullName">ชื่อที่แสดง</label>
-            <input id="fullName" maxlength="100">
-            <button type="submit">สมัครสมาชิก</button>
-        </form>
-        <div id="message" class="message"></div>
-        <p>มีบัญชีแล้ว? <a th:href="@{/login}">เข้าสู่ระบบ</a></p>
+        <span class="auth-tag">Signup</span>
     </div>
+
+    <div class="card auth-card">
+        <form id="register-form" novalidate>
+            <label for="username">ชื่อผู้ใช้งาน / Username</label>
+            <input id="username" placeholder="ชื่อผู้ใช้ของคุณ" minlength="3" maxlength="50" autocomplete="username" required>
+            <p class="help">ภาษาอังกฤษ ตัวเลข หรือขีดล่าง (_) เท่านั้น ความยาว 3–50 ตัวอักษร ใช้สำหรับเข้าสู่ระบบและแสดงในอันดับ</p>
+
+            <label for="email">อีเมล / Email</label>
+            <input id="email" type="email" placeholder="user@example.com" autocomplete="email" required>
+            <p class="help">กรุณาใช้อีเมลที่ใช้งานได้จริง</p>
+
+            <label for="password">รหัสผ่าน / Password</label>
+            <div class="password-field">
+                <input id="password" type="password" placeholder="••••••••" minlength="6" autocomplete="new-password" required>
+                <button type="button" class="eye" onclick="togglePassword('password', this)" aria-label="แสดงรหัสผ่าน">👁</button>
+            </div>
+            <p class="help">6–72 ตัวอักษร</p>
+
+            <label for="confirm">ยืนยันรหัสผ่าน / Repeat Password</label>
+            <div class="password-field">
+                <input id="confirm" type="password" placeholder="••••••••" autocomplete="new-password" required>
+                <button type="button" class="eye" onclick="togglePassword('confirm', this)" aria-label="แสดงรหัสผ่าน">👁</button>
+            </div>
+            <p class="help">เพื่อยืนยันว่าคุณไม่ได้กรอกรหัสผ่านผิด</p>
+
+            <label for="fullName">ชื่อที่แสดง / Display Name</label>
+            <input id="fullName" placeholder="ไม่ใส่ก็ได้ จะใช้ชื่อผู้ใช้แทน" maxlength="100">
+
+            <div id="message" class="message"></div>
+            <button type="submit" class="auth-submit">สมัครสมาชิก</button>
+        </form>
+    </div>
+
+    <p class="auth-foot">มีบัญชีอยู่แล้วใช่ไหม? <a th:href="@{/login}">คลิกที่นี่เพื่อไปหน้าเข้าสู่ระบบ</a></p>
 </main>
 
 <script>
+    function togglePassword(id, button) {
+        const input = document.getElementById(id);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        button.classList.toggle('on', show);
+    }
+
     document.getElementById('register-form').addEventListener('submit', async event => {
         event.preventDefault();
-        const body = {
-            username: document.getElementById('username').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            password: document.getElementById('password').value,
-            fullName: document.getElementById('fullName').value.trim()
-        };
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm').value;
+
+        if (!/^[A-Za-z0-9_]{3,50}$/.test(username)) {
+            showMessage('message', 'ชื่อผู้ใช้ต้องเป็นภาษาอังกฤษ ตัวเลข หรือขีดล่าง ความยาว 3–50 ตัวอักษร', true);
+            return;
+        }
+        if (password.length < 6) {
+            showMessage('message', 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร', true);
+            return;
+        }
+        if (password !== confirm) {
+            showMessage('message', 'รหัสผ่านทั้งสองช่องไม่ตรงกัน', true);
+            return;
+        }
+
+        const body = { username, email, password, fullName: document.getElementById('fullName').value.trim() };
         try {
             const user = await api('/users/register', { method: 'POST', body: JSON.stringify(body) });
             setUser(user);
