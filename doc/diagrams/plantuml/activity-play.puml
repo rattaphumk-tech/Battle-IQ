@@ -1,0 +1,38 @@
+@startuml activity-play
+skinparam defaultFontName Tahoma
+title Activity 1 - เล่นเกม 1 รอบ
+
+start
+if (login แล้ว?) then (ไม่)
+    :หน้า /login หรือ /register;
+endif
+:เลือกหมวดหมู่ที่ /categories;
+:POST /quiz-sessions/start;
+if (หมวดมีคำถาม?) then (ไม่)
+    :แสดง 404;
+    stop
+endif
+:สุ่มคำถามสูงสุด 5 ข้อ
+สร้าง session + details;
+repeat
+    :แสดงข้อถัดไป เริ่มนับถอยหลัง;
+    if (ตอบทันเวลา?) then (หมดเวลา)
+        :ข้อนี้ 0 คะแนน;
+    else (ตอบ)
+        :POST /answers;
+        if (ตอบถูก?) then (ใช่)
+            :เลือก ScoringStrategy
+            คิดคะแนน บันทึก;
+        else (ไม่)
+            :scoreEarned = 0 แสดงเฉลย;
+        endif
+    endif
+repeat while (ครบทุกข้อ?) is (ยัง) not (ครบ)
+:POST /complete
+รวมคะแนน status = COMPLETED;
+:publish GameCompletedEvent;
+:Listener อัปเดตโปรไฟล์
+คะแนนรวม เลเวล streak;
+:หน้า /result แสดงคะแนนและเฉลย;
+stop
+@enduml

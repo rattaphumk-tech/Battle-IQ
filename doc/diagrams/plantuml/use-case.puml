@@ -1,0 +1,49 @@
+@startuml use-case
+!pragma layout smetana
+skinparam defaultFontName Tahoma
+skinparam actorStyle awesome
+left to right direction
+title Battle IQ - Use Case Diagram
+
+actor "ผู้เล่น" as Player
+actor "เจ้าของห้อง" as Host
+actor "ผู้ดูแลคำถาม" as Admin
+
+Host -|> Player
+
+rectangle "Battle IQ" {
+    usecase "UC-01 สมัครสมาชิก" as UC1
+    usecase "UC-02 เข้าสู่ระบบ" as UC2
+    usecase "UC-03 ดูและแก้โปรไฟล์" as UC3
+    usecase "UC-04 เลือกหมวดหมู่และเริ่มเกม" as UC4
+    usecase "UC-05 ตอบคำถาม" as UC5
+    usecase "UC-06 จบเกมและดูผล" as UC6
+    usecase "UC-07 ดูประวัติการเล่น" as UC7
+    usecase "UC-08 ดูอันดับ" as UC8
+    usecase "UC-09 สร้างห้องแข่ง" as UC9
+    usecase "UC-10 เข้าร่วมห้องแข่ง" as UC10
+    usecase "UC-11 เริ่มการแข่งขันในห้อง" as UC11
+    usecase "UC-12 จัดการหมวดหมู่" as UC12
+    usecase "UC-13 จัดการคำถาม" as UC13
+}
+
+Player --> UC1
+Player --> UC2
+Player --> UC3
+Player --> UC4
+Player --> UC5
+Player --> UC6
+Player --> UC7
+Player --> UC8
+Player --> UC9
+Player --> UC10
+Host --> UC11
+Admin --> UC12
+Admin --> UC13
+
+UC4 ..> UC2 : <<include>>
+UC5 ..> UC4 : <<include>>
+UC6 ..> UC5 : <<include>>
+UC11 ..> UC9 : <<include>>
+UC11 ..> UC4 : <<extend>>
+@enduml

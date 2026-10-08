@@ -1,0 +1,27 @@
+@startuml deployment
+!pragma layout smetana
+skinparam defaultFontName Tahoma
+title Battle IQ - Deployment Diagram
+
+node "เครื่องผู้เล่น" as Client {
+    artifact "Web Browser\n(Chrome / Edge / มือถือ)" as BR
+}
+
+node "Render.com\nWeb Service (Docker, Free)" as Render {
+    node "Docker container\neclipse-temurin:17-jre" as IMG {
+        artifact "battle-iq.jar\nSpring Boot + Tomcat\nPORT จาก env" as JAR
+    }
+}
+
+cloud "Neon\nServerless PostgreSQL\nap-southeast-1" as Neon {
+    database "neondb\nSSL required" as PG
+}
+
+cloud "GitHub" as GH {
+    artifact "rattaphumk-tech/Battle-IQ\nrender.yaml + Dockerfile" as REPO
+}
+
+BR -right-> JAR : HTTPS :443
+JAR -right-> PG : JDBC SSL :5432\nDB_URL / DB_USERNAME / DB_PASSWORD
+REPO -down-> IMG : build & deploy\n(Blueprint / Manual Deploy)
+@enduml

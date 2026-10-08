@@ -1,0 +1,45 @@
+@startuml component
+!pragma layout smetana
+skinparam defaultFontName Tahoma
+title Battle IQ - Component Diagram
+
+node "เบราว์เซอร์ผู้เล่น" {
+    [Thymeleaf pages] as UI
+    [app.js] as JS
+    UI --> JS
+}
+
+node "Spring Boot Application (battle-iq.jar)" {
+    [controller/web\nPageController] as WEB
+    [controller\nREST Controller /api/v1] as REST
+    [exception\nGlobalExceptionHandler] as EXC
+    [service (interface)\n+ service/impl] as SVC
+    [service/scoring\nStrategy] as STR
+    [service/command\nCommand] as CMD
+    [event\nObserver] as EVT
+    [mapper] as MAP
+    [repository\nSpring Data JPA] as REPO
+    [domain/entity] as DOM
+    [config\nPasswordConfig, OpenApiConfig] as CFG
+    [springdoc\nSwagger UI] as SWG
+
+    REST --> SVC
+    SVC --> STR
+    SVC --> CMD
+    SVC --> EVT
+    SVC --> MAP
+    SVC --> REPO
+    REPO --> DOM
+    REST ..> EXC
+    SWG ..> REST
+    SVC ..> CFG
+}
+
+database "Neon (PostgreSQL)" {
+    [8 ตาราง\nschema.sql + data.sql] as T
+}
+
+JS --> REST : HTTP JSON
+UI --> WEB : HTTP GET หน้า
+REPO --> T : JDBC / Hibernate
+@enduml

@@ -1,0 +1,150 @@
+@startuml class-diagram
+!pragma layout smetana
+skinparam defaultFontName Tahoma
+skinparam classAttributeIconSize 0
+title Battle IQ - Class Diagram (ระบุตำแหน่ง Design Pattern)
+
+package "controller" {
+    class UserController {
+        +registerUser(dto)
+        +login(dto)
+        +getUserById(id)
+    }
+    class QuizSessionController {
+        +startQuizSession(dto)
+        +getSessionQuestions(id)
+        +completeQuizSession(id)
+    }
+    class AnswerController {
+        +submitAnswer(sessionId, dto)
+    }
+    class RoomController {
+        +createRoom(dto)
+        +joinRoom(code, dto)
+        +startRoom(code, dto)
+        +getRoom(code)
+    }
+}
+
+package "service" {
+    interface UserService
+    interface UserProfileService
+    interface QuizSessionService
+    interface AnswerService
+    interface RoomService
+    class QuestionFactory <<Factory>> {
+        +createQuizQuestions(categoryId, count)
+    }
+}
+
+package "service.impl" {
+    class UserServiceImpl
+    class UserProfileServiceImpl {
+        +applyGameResult(userId, score)
+    }
+    class QuizSessionServiceImpl {
+        -eventPublisher
+        +completeSession(id)
+    }
+    class AnswerServiceImpl <<Command invoker>> {
+        +submitAnswer(sessionId, dto)
+    }
+    class RoomServiceImpl
+}
+
+package "service.scoring" <<Strategy>> {
+    interface ScoringStrategy {
+        +calculate(question, time, streak) : int
+    }
+    class BasicScoringStrategy
+    class TimeBonusScoringStrategy
+    class StreakScoringStrategy
+    class ScoringStrategySelector <<Context>> {
+        +select(question, streak) : ScoringStrategy
+    }
+}
+
+package "service.command" <<Command>> {
+    interface "Command<R>" as Command {
+        +execute() : R
+    }
+    class SubmitAnswerCommand {
+        -detail : QuizDetail
+        -answer : String
+        +execute() : AnswerResultDTO
+    }
+}
+
+package "event" <<Observer>> {
+    class GameCompletedEvent {
+        sessionId
+        userId
+        totalScore
+    }
+    class GameCompletionEventListener {
+        +onGameCompleted(event)
+    }
+}
+
+package "repository" {
+    interface UserRepository
+    interface UserProfileRepository
+    interface QuizSessionRepository
+    interface QuizDetailRepository
+    interface QuestionRepository
+    interface RoomRepository
+}
+
+package "domain.entity" {
+    class User
+    class UserProfile
+    class QuizSession
+    class QuizDetail
+    class Question
+    class Room
+}
+
+UserController --> UserService
+QuizSessionController --> QuizSessionService
+AnswerController --> AnswerService
+RoomController --> RoomService
+
+UserService <|.. UserServiceImpl
+UserProfileService <|.. UserProfileServiceImpl
+QuizSessionService <|.. QuizSessionServiceImpl
+AnswerService <|.. AnswerServiceImpl
+RoomService <|.. RoomServiceImpl
+
+UserServiceImpl --> UserRepository
+UserProfileServiceImpl --> UserProfileRepository
+QuizSessionServiceImpl --> QuizSessionRepository
+QuizSessionServiceImpl --> QuestionFactory
+QuestionFactory --> QuestionRepository
+AnswerServiceImpl --> QuizDetailRepository
+AnswerServiceImpl --> UserProfileRepository
+RoomServiceImpl --> RoomRepository
+RoomServiceImpl --> QuestionFactory
+RoomServiceImpl --> QuizSessionService
+
+ScoringStrategy <|.. BasicScoringStrategy
+ScoringStrategy <|.. TimeBonusScoringStrategy
+ScoringStrategy <|.. StreakScoringStrategy
+StreakScoringStrategy --> TimeBonusScoringStrategy
+ScoringStrategySelector --> ScoringStrategy
+AnswerServiceImpl --> ScoringStrategySelector
+
+Command <|.. SubmitAnswerCommand
+AnswerServiceImpl ..> SubmitAnswerCommand : creates
+SubmitAnswerCommand --> ScoringStrategySelector
+SubmitAnswerCommand --> QuizDetail
+
+QuizSessionServiceImpl ..> GameCompletedEvent : publishes
+GameCompletionEventListener ..> GameCompletedEvent : listens
+GameCompletionEventListener --> UserProfileService
+
+User "1" -- "1" UserProfile
+User "1" -- "*" QuizSession
+QuizSession "1" *-- "*" QuizDetail
+Question "1" -- "*" QuizDetail
+Room "1" -- "*" User
+@enduml

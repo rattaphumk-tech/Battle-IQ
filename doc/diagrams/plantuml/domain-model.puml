@@ -1,0 +1,65 @@
+@startuml domain-model
+!pragma layout smetana
+skinparam defaultFontName Tahoma
+hide circle
+hide methods
+title Battle IQ - Domain Model
+
+class User {
+    username
+    email
+    password
+    createdAt
+}
+class UserProfile {
+    fullName
+    avatarUrl
+    totalScore
+    level
+    currentStreak
+}
+class Category {
+    name
+    description
+}
+class Question {
+    questionText
+    optionA..D
+    correctAnswer
+    timeLimitSeconds
+}
+class QuizSession {
+    totalQuestions
+    totalScore
+    status
+    createdAt
+    completedAt
+}
+class QuizDetail {
+    userAns
+    isCorrect
+    timeTakenSeconds
+    scoreEarned
+}
+class Room {
+    code
+    status
+    createdAt
+    startedAt
+}
+class RoomPlayer {
+    joinedAt
+}
+
+User "1" -- "1" UserProfile : มีโปรไฟล์
+User "1" -- "0..*" QuizSession : เล่น
+Category "1" -- "0..*" Question : รวบรวม
+Category "1" -- "0..*" QuizSession : ถูกเลือกใน
+QuizSession "1" *-- "1..*" QuizDetail : ประกอบด้วย
+Question "1" -- "0..*" QuizDetail : ถูกถามใน
+User "1" -- "0..*" Room : เป็นเจ้าของ
+Room "1" *-- "1..8" RoomPlayer : มีผู้เล่น
+User "1" -- "0..*" RoomPlayer : เข้าร่วม
+RoomPlayer "0..1" -- "0..1" QuizSession : เล่นด้วย
+Room "0..*" -- "1" Category : ใช้หมวด
+@enduml

@@ -1,0 +1,38 @@
+@startuml sequence-room-start
+skinparam defaultFontName Tahoma
+title Sequence 4 - เริ่มแข่งในห้อง
+
+actor "เจ้าของห้อง" as H
+actor "ผู้เล่นคนอื่น" as G
+participant "room.html (host)" as VH
+participant "room.html (guest)" as VG
+participant "RoomController" as C
+participant "RoomServiceImpl" as S
+participant "QuestionFactory" as F
+participant "QuizSessionService" as QS
+
+loop ทุก 2 วินาที
+    VG -> C : GET /rooms/{code}
+    C --> VG : {status: WAITING, players}
+end
+H -> VH : กดเริ่มแข่ง
+VH -> C : POST /rooms/{code}/start
+C -> S : startRoom(code, userId)
+alt ไม่ใช่เจ้าของ / ผู้เล่น < 2 / เริ่มแล้ว
+    S --> C : ConflictException (409)
+end
+S -> F : createQuizQuestions(categoryId, 5)
+F --> S : คำถาม 1 ชุด
+loop ผู้เล่นทุกคน
+    S -> QS : createSession(user, category, questions)
+    QS --> S : QuizSession
+    S -> S : player.quizSession = session
+end
+S -> S : status = IN_PROGRESS
+S --> C : RoomResponseDTO
+C --> VH : 200
+VH --> H : ไป /play?session=A&room=CODE
+VG -> C : GET /rooms/{code}
+C --> VG : {status: IN_PROGRESS, sessionId = B}
+VG --> G : ไป /play?session=B&room=CODE
+@enduml

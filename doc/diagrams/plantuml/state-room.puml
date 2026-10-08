@@ -1,0 +1,17 @@
+@startuml state-room
+skinparam defaultFontName Tahoma
+title State - Room
+
+[*] --> WAITING : POST /rooms\nเจ้าของเป็นผู้เล่นคนแรก
+WAITING --> WAITING : POST /join\nเพิ่มผู้เล่น (สูงสุด 8)
+WAITING --> IN_PROGRESS : POST /start โดยเจ้าของ\nผู้เล่น >= 2 สุ่มคำถาม 1 ชุด
+IN_PROGRESS --> IN_PROGRESS : ผู้เล่นทยอยเล่นจบ\nGET /rooms/{code} แสดงคะแนนสด
+IN_PROGRESS --> FINISHED : GET /rooms/{code} พบว่า\nทุก session เป็น COMPLETED
+FINISHED --> [*]
+
+WAITING : join ซ้ำ → คืนห้องเดิม
+WAITING : join เมื่อเต็ม → 409
+WAITING : start โดยคนอื่น → 409
+IN_PROGRESS : join → 409
+IN_PROGRESS : start ซ้ำ → 409
+@enduml

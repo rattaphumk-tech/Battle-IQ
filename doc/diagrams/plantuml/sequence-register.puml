@@ -1,0 +1,37 @@
+@startuml sequence-register
+skinparam defaultFontName Tahoma
+title Sequence 1 - สมัครสมาชิก
+
+actor "ผู้เล่น" as P
+participant "register.html" as V
+participant "UserController" as C
+participant "UserServiceImpl" as S
+participant "PasswordEncoder" as E
+participant "UserRepository" as R
+database "PostgreSQL" as DB
+
+P -> V : กรอกฟอร์ม กดสมัคร
+V -> V : ตรวจรหัสผ่านสองช่องตรงกัน
+V -> C : POST /api/v1/users/register
+C -> C : @Valid UserRequestDTO
+alt ข้อมูลไม่ผ่าน
+    C --> V : 400 ErrorResponseDTO
+end
+C -> S : register(dto)
+S -> R : existsByUsername / existsByEmail
+R -> DB : SELECT
+DB --> R : ผล
+alt ซ้ำ
+    S --> C : ConflictException
+    C --> V : 409
+end
+S -> E : encode(password)
+E --> S : BCrypt hash
+S -> S : สร้าง User + UserProfile (level 1, score 0)
+S -> R : save(user) (cascade profile)
+R -> DB : INSERT users, user_profiles
+S --> C : UserResponseDTO (ไม่มี password)
+C --> V : 201 Created
+V -> V : เก็บ user ใน localStorage
+V --> P : ไปหน้า /categories
+@enduml
