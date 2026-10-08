@@ -16,6 +16,7 @@
 | State: QuizSession | [state-diagram.md](state-diagram.md) | [img/state-session.png](img/state-session.png) |
 | State: Room | [state-diagram.md](state-diagram.md) | [img/state-room.png](img/state-room.png) |
 | ER Diagram | [er-diagram.md](er-diagram.md) | [img/er-diagram.png](img/er-diagram.png) |
+| ER Diagram (draw.io) | [er-diagram.drawio](er-diagram.drawio) เปิดแก้ได้ที่ app.diagrams.net | [img/er-diagram-drawio.png](img/er-diagram-drawio.png) |
 | Component Diagram | [component-deployment.md](component-deployment.md) | [img/component.png](img/component.png) |
 | Deployment Diagram | [component-deployment.md](component-deployment.md) | [img/deployment.png](img/deployment.png) |
 
