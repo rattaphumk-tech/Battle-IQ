@@ -49,7 +49,7 @@ public class QuizResultServiceImpl implements QuizResultService {
             throw new ResourceNotFoundException("User not found with ID: " + userId);
         }
         return quizSessionRepository.findByUserId(userId).stream()
-                .sorted(Comparator.comparing(QuizSession::getCreatedAt).reversed())
+                .sorted(Comparator.comparing((QuizSession quizSession) -> quizSession.getCreatedAt()).reversed())
                 .map(QuizSessionMapper::toResponse)
                 .toList();
     }
