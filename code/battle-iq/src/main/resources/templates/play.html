@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('เล่นเกม')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <div class="card">
+        <div class="play-top">
+            <span class="pill" id="progress"></span>
+            <span class="pill score" id="score-pill">คะแนน <strong id="score">0</strong></span>
+        </div>
+        <div class="timer-bar"><div class="timer-fill" id="timer-bar"></div></div>
+        <p class="timer-text">เหลือ <span id="timer">0</span> วินาที</p>
+        <div class="dots" id="dots"></div>
+        <h2 class="question" id="question-text"></h2>
+        <div class="options" id="options"></div>
+        <div id="message" class="message"></div>
+        <button id="next-button" hidden onclick="nextQuestion()">ข้อถัดไป</button>
+    </div>
+</main>
+
+<script>
+    const user = requireLogin();
+    const sessionId = getQueryParam('session');
+    const roomCode = getQueryParam('room');
+    const optionKeys = ['A', 'B', 'C', 'D'];
+    let questions = [];
+    let index = 0;
+    let score = 0;
+    let secondsLeft = 0;
+    let timerId = null;
+
+    async function loadQuestions() {
+        if (!sessionId) {
+            location.href = '/categories';
+            return;
+        }
+        try {
+            questions = await api('/quiz-sessions/' + sessionId + '/questions');
+            document.getElementById('dots').innerHTML = questions
+                .map((q, i) => '<span class="dot" id="dot-' + i + '"></span>')
+                .join('');
+            showQuestion();
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    function showQuestion() {
+        const question = questions[index];
+        document.getElementById('progress').textContent = 'ข้อ ' + (index + 1) + ' / ' + questions.length;
+        document.getElementById('dot-' + index).classList.add('current');
+        document.getElementById('question-text').textContent = question.questionText;
+        document.getElementById('options').innerHTML = optionKeys.map(key =>
+            '<button class="option" id="option-' + key + '" onclick="submitAnswer(\'' + key + '\')">'
+            + '<span class="key">' + key + '</span><span>' + escapeHtml(question['option' + key]) + '</span></button>'
+        ).join('');
+        document.getElementById('next-button').hidden = true;
+        showMessage('message', '', false);
+        startTimer(question.timeLimitSeconds);
+    }
+
+    function updateTimerBar(limit) {
+        const bar = document.getElementById('timer-bar');
+        bar.style.width = Math.max(secondsLeft / limit * 100, 0) + '%';
+        bar.classList.toggle('danger', secondsLeft <= 5);
+        document.getElementById('timer').textContent = secondsLeft;
+    }
+
+    function startTimer(limit) {
+        secondsLeft = limit;
+        updateTimerBar(limit);
+        timerId = setInterval(() => {
+            secondsLeft--;
+            updateTimerBar(limit);
+            if (secondsLeft <= 0) {
+                timeUp();
+            }
+        }, 1000);
+    }
+
+    function lockOptions() {
+        clearInterval(timerId);
+        optionKeys.forEach(key => document.getElementById('option-' + key).disabled = true);
+        const isLast = index === questions.length - 1;
+        const nextButton = document.getElementById('next-button');
+        nextButton.textContent = isLast ? 'ดูผลคะแนน' : 'ข้อถัดไป';
+        nextButton.hidden = false;
+    }
+
+    function markDot(correct) {
+        const dot = document.getElementById('dot-' + index);
+        dot.classList.remove('current');
+        dot.classList.add(correct ? 'correct' : 'wrong');
+    }
+
+    // หมดเวลาโดยไม่ได้ตอบ ข้อนี้ได้ 0 คะแนน
+    function timeUp() {
+        lockOptions();
+        markDot(false);
+        showMessage('message', 'หมดเวลา', true);
+    }
+
+    async function submitAnswer(key) {
+        const question = questions[index];
+        const timeTaken = question.timeLimitSeconds - secondsLeft;
+        lockOptions();
+        try {
+            const result = await api('/quiz-sessions/' + sessionId + '/answers', {
+                method: 'POST',
+                body: JSON.stringify({ questionId: question.id, answer: key, timeTakenSeconds: timeTaken })
+            });
+            document.getElementById('option-' + result.correctAnswer).classList.add('correct');
+            markDot(result.correct);
+            if (result.correct) {
+                score += result.scoreEarned;
+                document.getElementById('score').textContent = score;
+                const pill = document.getElementById('score-pill');
+                pill.classList.remove('bump');
+                void pill.offsetWidth;
+                pill.classList.add('bump');
+                showMessage('message', 'ถูกต้อง +' + result.scoreEarned + ' คะแนน', false);
+            } else {
+                document.getElementById('option-' + key).classList.add('wrong');
+                showMessage('message', 'ผิด คำตอบที่ถูกคือ ' + result.correctAnswer, true);
+            }
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    async function nextQuestion() {
+        if (index < questions.length - 1) {
+            index++;
+            showQuestion();
+            return;
+        }
+        try {
+            await api('/quiz-sessions/' + sessionId + '/complete', { method: 'POST' });
+            // เล่นในห้องแข่ง ให้กลับไปดูอันดับของห้องแทนหน้าสรุปผลเดี่ยว
+            location.href = roomCode ? '/room?code=' + roomCode : '/result?session=' + sessionId;
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    if (user) {
+        loadQuestions();
+    }
+</script>
+</body>
+</html>

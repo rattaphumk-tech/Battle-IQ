@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('เข้าสู่ระบบ')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container auth-page">
+    <div class="auth-head">
+        <h2>เข้าสู่ระบบ</h2>
+        <span class="auth-tag">Signin</span>
+    </div>
+
+    <div class="card auth-card">
+        <form id="login-form" novalidate>
+            <label for="username">ชื่อผู้ใช้ / Username</label>
+            <input id="username" placeholder="ชื่อผู้ใช้ของคุณ" autocomplete="username" required>
+
+            <label for="password">รหัสผ่าน / Password</label>
+            <div class="password-field">
+                <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required>
+                <button type="button" class="eye" onclick="togglePassword('password', this)" aria-label="แสดงรหัสผ่าน">👁</button>
+            </div>
+
+            <div id="message" class="message"></div>
+            <button type="submit" class="auth-submit">เข้าสู่ระบบ</button>
+        </form>
+    </div>
+
+    <p class="auth-foot">ยังไม่ได้สร้างบัญชีใช่ไหม? <a th:href="@{/register}">คลิกที่นี่เพื่อไปหน้าสร้างบัญชี</a></p>
+</main>
+
+<script>
+    function togglePassword(id, button) {
+        const input = document.getElementById(id);
+        const show = input.type === 'password';
+        input.type = show ? 'text' : 'password';
+        button.classList.toggle('on', show);
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async event => {
+        event.preventDefault();
+        const body = {
+            username: document.getElementById('username').value.trim(),
+            password: document.getElementById('password').value
+        };
+        if (!body.username || !body.password) {
+            showMessage('message', 'กรุณากรอกชื่อผู้ใช้และรหัสผ่าน', true);
+            return;
+        }
+        try {
+            const user = await api('/users/login', { method: 'POST', body: JSON.stringify(body) });
+            setUser(user);
+            location.href = '/categories';
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    });
+</script>
+</body>
+</html>

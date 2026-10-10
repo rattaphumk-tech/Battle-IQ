@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="th" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('เลือกหมวดหมู่')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: nav}"></nav>
+
+<main class="container">
+    <h2>เลือกหมวดหมู่ที่จะเล่น</h2>
+    <div id="message" class="message"></div>
+    <div id="category-list" class="grid"></div>
+</main>
+
+<script>
+    const user = requireLogin();
+
+    async function loadCategories() {
+        try {
+            const categories = await api('/categories');
+            document.getElementById('category-list').innerHTML = categories.map(category =>
+                '<div class="card"><h3>' + escapeHtml(category.name) + '</h3>'
+                + '<p>' + escapeHtml(category.description) + '</p>'
+                + '<button onclick="startGame(' + category.id + ')">เริ่มเล่น</button></div>'
+            ).join('');
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    async function startGame(categoryId) {
+        try {
+            const session = await api('/quiz-sessions/start', {
+                method: 'POST',
+                body: JSON.stringify({ userId: user.id, categoryId: categoryId })
+            });
+            location.href = '/play?session=' + session.sessionId;
+        } catch (error) {
+            showMessage('message', error.message, true);
+        }
+    }
+
+    if (user) {
+        loadCategories();
+    }
+</script>
+</body>
+</html>
