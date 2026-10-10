@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.battleiq.domain.entity.QuizDetail;
 import com.battleiq.domain.entity.QuizSession;
+import com.battleiq.domain.entity.UserProfile;
 import com.battleiq.dto.request.AnswerRequestDTO;
 import com.battleiq.dto.response.AnswerResultDTO;
 import com.battleiq.exception.ConflictException;
@@ -36,22 +37,15 @@ public class AnswerServiceImpl implements AnswerService {
 
         QuizSession session = detail.getQuizSession();
         if (!"IN_PROGRESS".equals(session.getStatus())) {
-            throw new ConflictException(
-                    "Session " + sessionId + " is already " + session.getStatus());
+            throw new ConflictException("Session " + sessionId + " is already " + session.getStatus());
         }
 
-        int currentStreak = userProfileRepository
-                .findByUserId(session.getUser().getId())
-                .map(profile -> profile.getCurrentStreak())
+        int currentStreak = userProfileRepository.findByUserId(session.getUser().getId())
+                .map(UserProfile::getCurrentStreak)
                 .orElse(0);
 
         Command<AnswerResultDTO> command = new SubmitAnswerCommand(
-                detail,
-                request.getAnswer(),
-                request.getTimeTakenSeconds(),
-                currentStreak,
-                strategySelector);
-
+                detail, request.getAnswer(), request.getTimeTakenSeconds(), currentStreak, strategySelector);
         AnswerResultDTO result = command.execute();
 
         quizDetailRepository.save(detail);
